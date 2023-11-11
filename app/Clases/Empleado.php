@@ -3,7 +3,7 @@
 
 class Empleado
 {
-    public static function AltaEmpleado($nombre, $apellido)
+    protected static function AltaEmpleado($nombre, $apellido)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
@@ -15,7 +15,7 @@ class Empleado
         $consulta->execute();
     }
 
-    public static function ListarEmpleados()
+    protected static function ListarEmpleados()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
@@ -26,7 +26,7 @@ class Empleado
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Empleado');
     }
 
-    public static function ListarPorSector($sector)
+    protected static function ListarPorSector($sector)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
@@ -38,32 +38,46 @@ class Empleado
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Empleado');
     }
 
-    public static function AsignarSector($idEmpleado, $sector)
+    protected static function AsignarSector($idEmpleado, $sector)
     {
-        $sectores = array("Cocinero", "Bartender", "Mozo", "Cervecero");
-
-        if (!in_array($sector, $sectores))
-            throw new Exception("Sector no valido", 100);
-        else
-        {
-            try
-            {
-                $objAccesoDatos = AccesoDatos::obtenerInstancia();
-                $consulta = $objAccesoDatos->prepararConsulta(
-                    "UPDATE empleado 
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta(
+            "UPDATE empleado 
                     SET sector = :sector 
                     WHERE id = :idEmpleado"
-                );
-                $consulta->bindValue(':sector', $sector, PDO::PARAM_STR);
-                $consulta->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
-                $consulta->execute();
-                return true;
-            }
-            catch (PDOException $e)
+        );
+        $consulta->bindValue(':sector', $sector, PDO::PARAM_STR);
+        $consulta->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
+        $consulta->execute();
+        return true;
+    }
+
+    protected static function ValidarDatos($parametros)
+    {
+        $nombre = $parametros['nombre'];
+        $apellido = $parametros['apellido'];
+        if (isset($nombre) && isset($apellido))
+        {
+            if (is_string($nombre) && is_string($apellido))
             {
-                echo $e->getMessage();
-                return false;
+                if (preg_match('/^[a-zA-Z ]+$/', $nombre) && preg_match('/^[a-zA-Z ]+$/', $apellido))
+                    return true;
             }
+            else
+                return false;
         }
+    }
+
+    protected static function BuscarEmpleadoPorID($idEMpleado)
+    {
+    }
+
+    protected static function BuscarEmpleadoPorNombre($nombre, $apellido)
+    {
+        $empleados = self::ListarEmpleados();
+        foreach ($empleados as $e)
+            if ($e->nombre == $nombre && $e->apellido == $apellido)
+                return $e;
+        return null;
     }
 }
