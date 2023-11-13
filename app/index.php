@@ -11,9 +11,12 @@ use Slim\Routing\RouteCollectorProxy;
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/./db/AccesoDatos.php';
 require __DIR__ . '/./Controller/CEmpleado.php';
-require __DIR__ . '/./Clases/Producto.php';
-require __DIR__ . '/./Clases/Mesa.php';
-require __DIR__ . '/./Clases/Pedido.php';
+require __DIR__ . '/./Controller/CProducto.php';
+require __DIR__ . '/./Controller/CMesa.php';
+require __DIR__ . '/./Controller/CPedido.php';
+require __DIR__ . '/./Controller/CCliente.php';
+require __DIR__ . '/./Controller/CComanda.php';
+require __DIR__ . '/./Middleware/AuthMiddleware.php';
 
 
 // Instantiate App
@@ -39,70 +42,40 @@ $app->addBodyParsingMiddleware();
 // });
 ////////////////////////////////
 
-#region PRODUCTOS
-$app->post('/AltaProducto', function (Request $request, Response $response)
-{
-    $data = $request->getParsedBody();
-    $nombre = $data['nombre'];
-    $cantidad = $data['cantidad'];
-    Producto::AltaProducto($nombre, $cantidad);
-    $payload = json_encode(array('message' => 'Producto agregado con exito'));
-    $response->getBody()->write($payload);
-    return $response->withHeader('Content-Type', 'application/json');
-});
-
-$app->get('/ListarProductos', function (Request $request, Response $response)
-{
-    $data = $request->getParsedBody();
-    //$idProducto = $data['idProducto'];
-    $salida = Producto::ListarProductos();
-    $payload = json_encode(array('message' => $salida));
-    $response->getBody()->write($payload);
-    return $response->withHeader('Content-Type', 'application/json');
-});
-#endregion
 
 #region EMPLEADOS
 $app->post('/AltaEmpleado', function (Request $request, Response $response, $args)
 {
+    $payload = "";
     try
     {
-        CEmpleado::CargarEmpleado($request, $response, $args);
-        $payload = json_encode(array('message' => 'Empleado agregado con exito'));
-        $response->getBody()->write($payload);
-        return $response->withHeader('Content-Type', 'application/json');
+        if (CEmpleado::IngresarEmpleado($request))
+            $payload = json_encode('Empleado agregado con exito');
     }
     catch (Exception $e)
     {
-        echo "El empleado no pudo ser creado. {$e->getMessage()}";
+        $payload = json_encode("El empleado no pudo ser creado. {$e->getMessage()}");
     }
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
 });
 
 $app->get('/ListarEmpleados', function (Request $request, Response $response, $args)
 {
-    $salida = CEmpleado::Listar();
-    $payload = json_encode(array('message' => $salida));
+    $salida = CEmpleado::ListarEmpleados();
+    $payload = json_encode($salida);
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
-});
+})/*->add(AuthMiddleware::class)*/;
 
-#VERSION 1
-$app->get('/ListarPorSector', function (Request $request, Response $response, $args)
+
+$app->get('/ListarEmpleados/{sector}', function (Request $request, Response $response, $args)
 {
-    $salida = CEmpleado::ListarSector($request);
-    $payload = json_encode(array('message' => $salida));
+    $salida = CEmpleado::ListarSector($args['sector']);
+    $payload = json_encode($salida);
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
 });
-#VERSION 2
-// $app->get('/ListarPorSector/{sector}', function (Request $request, Response $response, $args)
-// {
-//     $salida = CEmpleado::ListarSector($args['sector']);
-//     var_dump($salida);
-//     $payload = json_encode(array('message' => $salida));
-//     $response->getBody()->write($payload);
-//     return $response->withHeader('Content-Type', 'application/json');
-// });
 
 
 $app->put('/AsignarSector', function (Request $request, Response $response)
@@ -118,23 +91,113 @@ $app->put('/AsignarSector', function (Request $request, Response $response)
 
 #endregion
 
+#region PRODUCTOS
+$app->post('/AltaProducto', function (Request $request, Response $response)
+{
+    $data = $request->getParsedBody();
+    $nombre = $data['nombre'];
+    $cantidad = $data['cantidad'];
+
+    try
+    {
+        CProducto::AgregarProducto($nombre, $cantidad);
+        $payload = json_encode(array('message' => 'Producto agregado con éxito'));
+    }
+    catch (Exception $e)
+    {
+        $payload = json_encode(array('error' => $e->getMessage()));
+    }
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+$app->get('/ListarProductos', function (Request $request, Response $response)
+{
+    try
+    {
+        $productos = CProducto::ListarProductos();
+        $payload = json_encode(array('productos' => $productos));
+    }
+    catch (Exception $e)
+    {
+        $payload = json_encode(array('error' => $e->getMessage()));
+    }
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+$app->get('/BuscarProductoID/{id}', function (Request $request, Response $response, $args)
+{
+    $idProducto = $args['id'];
+
+    try
+    {
+        $producto = CProducto::BuscarProductoID($idProducto);
+        $payload = json_encode(array('producto' => $producto));
+    }
+    catch (Exception $e)
+    {
+        $payload = json_encode(array('error' => $e->getMessage()));
+    }
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+$app->get('/BuscarProductoNombre/{nombre}', function (Request $request, Response $response, $args)
+{
+    $nombreProducto = $args['nombre'];
+
+    try
+    {
+        $producto = CProducto::BuscarProductoNombre($nombreProducto);
+        $payload = json_encode(array('producto' => $producto));
+    }
+    catch (Exception $e)
+    {
+        $payload = json_encode(array('error' => $e->getMessage()));
+    }
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+#endregion
+
 #region PEDIDOS
 $app->post('/AltaPedido', function (Request $request, Response $response)
 {
+    #TIENE QUE RECIBIR UN ARRAY DE PRODUCTOS => CANTIDAD
     $data = $request->getParsedBody();
     $idProducto = $data['idProducto'];
     $cantidad = $data['cantidad'];
-    Pedido::AltaPedido($idProducto, $cantidad);
-    $payload = json_encode(array('message' => 'Pedido agregado con exito'));
+    $payload = "";
+    try
+    {
+        if (CPedido::AltaPedido($idProducto, $cantidad))
+            $payload = json_encode(array('message' => 'Pedido agregado con exito'));
+    }
+    catch (Exception $e)
+    {
+        $payload = json_encode(array('message' => 'No se pudo tomar el pedido ' . $e->getMessage()));
+    }
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
 });
 
 $app->get('/ListarPedidos', function (Request $request, Response $response)
 {
-    $data = $request->getParsedBody();
-    //$idProducto = $data['idProducto'];
-    $salida = Pedido::ListarPedidos();
+    $salida = CPedido::ListarPedidos();
+    $payload = json_encode(array('message' => $salida));
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+$app->put('/CambiarEstado/{id}/{estado}', function (Request $request, Response $response, $args)
+{
+    $salida = CPedido::CambiarEstadoPedido($args['id'], $args['estado']);
     $payload = json_encode(array('message' => $salida));
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
@@ -146,8 +209,8 @@ $app->get('/ListarPedidos', function (Request $request, Response $response)
 $app->post('/AltaMesa', function (Request $request, Response $response)
 {
     $data = $request->getParsedBody();
-    $idPedido = $data['idPedido'];
-    Mesa::AltaMesa($idPedido);
+    $idCliente = $data['idCliente'];
+    CMesa::AltaMesa($idCliente);
     $payload = json_encode(array('message' => 'Mesa agregada con exito'));
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
@@ -155,9 +218,7 @@ $app->post('/AltaMesa', function (Request $request, Response $response)
 
 $app->get('/ListarMesas', function (Request $request, Response $response)
 {
-    $data = $request->getParsedBody();
-    //$idProducto = $data['idProducto'];
-    $salida = Mesa::ListarMesas();
+    $salida = CMesa::ListarMesas();
     $payload = json_encode(array('message' => $salida));
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
@@ -168,7 +229,7 @@ $app->put('/CambiarEstadoMesa', function (Request $request, Response $response)
     $data = $request->getParsedBody();
     $idMesa = $data['id'];
     $estado = $data['estado'];
-    Mesa::CambiarEstadoMesa($idMesa, $estado);
+    CMesa::CambiarEstadoMesa($idMesa, $estado);
     $payload = json_encode(array('message' => "Estado cambiado"));
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
@@ -176,6 +237,31 @@ $app->put('/CambiarEstadoMesa', function (Request $request, Response $response)
 
 #endregion
 
+#region CLIENTES
+$app->post('/AltaCliente', function (Request $request, Response $response)
+{
+    $data = $request->getParsedBody();
+    $nombre = $data['nombre'];
+    $idProducto = $data['idProducto'];
+    $cantidad = $data['cantidad'];
+    CCliente::AltaCliente($nombre, $idProducto, $cantidad);
+    $payload = json_encode(array('message' => 'Cliente realizó pedido'));
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+#endregion
 
+#region COMANDAS
+$app->post('/AltaComanda', function (Request $request, Response $response)
+{
+    $data = $request->getParsedBody();
+    $idMesa = $data['idMesa'];
+    CComanda::ALtaComanda($idMesa);
+    $payload = json_encode(array('message' => 'Comanda creada'));
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+#endregion
 
 $app->run();

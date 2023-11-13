@@ -3,7 +3,7 @@
 
 class Empleado
 {
-    protected static function AltaEmpleado($nombre, $apellido)
+    public static function AltaEmpleado($nombre, $apellido)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
@@ -15,7 +15,7 @@ class Empleado
         $consulta->execute();
     }
 
-    protected static function ListarEmpleados()
+    public static function ListarEmpleados()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
@@ -26,7 +26,7 @@ class Empleado
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Empleado');
     }
 
-    protected static function ListarPorSector($sector)
+    public static function ListarPorSector($sector)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
@@ -38,7 +38,7 @@ class Empleado
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Empleado');
     }
 
-    protected static function AsignarSector($idEmpleado, $sector)
+    public static function AsignarSector($idEmpleado, $sector)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
@@ -52,7 +52,7 @@ class Empleado
         return true;
     }
 
-    protected static function ValidarDatos($parametros)
+    public static function ValidarDatos($parametros)
     {
         $nombre = $parametros['nombre'];
         $apellido = $parametros['apellido'];
@@ -68,11 +68,16 @@ class Empleado
         }
     }
 
-    protected static function BuscarEmpleadoPorID($idEMpleado)
+    public static function BuscarEmpleadoPorID($idEMpleado)
     {
+        $empleados = self::ListarEmpleados();
+        foreach ($empleados as $e)
+            if ($e->id == $idEMpleado)
+                return $e;
+        return null;
     }
 
-    protected static function BuscarEmpleadoPorNombre($nombre, $apellido)
+    public static function BuscarEmpleadoPorNombre($nombre, $apellido)
     {
         $empleados = self::ListarEmpleados();
         foreach ($empleados as $e)

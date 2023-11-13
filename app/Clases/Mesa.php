@@ -2,34 +2,29 @@
 
 include_once 'Empleado.php';
 include_once 'Cliente.php';
-include_once 'Manejador.php';
 //include_once 'Pedido.php';
 
 class Mesa
 {
-    private static $estados = array("Con cliente esperando pedido", "Con cliente comiendo", "Con cliente pagando", "Cerrada");
-    public static function AltaMesa($idPedido)
+    public static function AltaMesa($idPedido, $idMozo, $idCliente)
     {
-        #REVISAR QUE EL PEDIDO EXISTA
-        // if (Manejador::ExistePedido($idPedido))
-        // {
-        #REVISAR QUE HAYA MOZOS
-        // $empleados = Empleado::ListarEmpleados();
-        $empleados = Empleado::ListarPorSector("Mozo");
-        #SI EL MOZO ESTA ATENDIENDO MENOS DE CINCO MESAS
-        $random = rand(0, (count($empleados) - 1));
-        $mozo = $empleados[$random];
+        $estado = "Con cliente esperando pedido";
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta(
-            "INSERT INTO mesa (idMozo,idPedido) 
-            VALUES (:idMozo,:idPedido)"
+        $consultaInsert = $objAccesoDatos->prepararConsulta(
+            "INSERT INTO mesa (idMozo,idPedido,estado,idCliente) VALUES (:idMozo,:idPedido,:estado,:idCliente)",
         );
-        //$consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
-        $consulta->bindValue(':idMozo', $mozo->id, PDO::PARAM_INT);
-        //$consulta->bindValue(':idCliente', $mozo->id, PDO::PARAM_INT);
-        $consulta->bindValue(':idPedido', $idPedido, PDO::PARAM_STR);
-        $consulta->execute();
-        // }
+        $consultaInsert->bindValue(':estado', $estado, PDO::PARAM_STR);
+        $consultaInsert->bindValue(':idMozo', $idMozo, PDO::PARAM_INT);
+        $consultaInsert->bindValue(':idPedido', $idPedido, PDO::PARAM_INT);
+        $consultaInsert->bindValue(':idCliente', $idCliente, PDO::PARAM_INT);
+        $consultaInsert->execute();
+
+        #ACTUALIZO MESAS MOZO
+        $consultaUpdate = $objAccesoDatos->prepararConsulta(
+            "UPDATE empleado SET mesasAcargo = mesasAcargo + 1 WHERE id = :idMozo"
+        );
+        $consultaUpdate->bindValue(':idMozo', $idMozo, PDO::PARAM_INT);
+        $consultaUpdate->execute();
     }
 
 
@@ -60,5 +55,67 @@ class Mesa
                 echo "Estado de la mesa actualizado";
                 return;
             }
+    }
+
+    public static function TraerMozo()
+    {
+        $empleados = Empleado::ListarPorSector("Mozo");
+        #SI EL MOZO ESTA ATENDIENDO MENOS DE CINCO MESAS
+        $disponibles = array_filter($empleados, function ($mozo)
+        {
+            return $mozo->mesasACargo < 5;
+        });
+
+        if (count($disponibles) > 0)
+        {
+            $random = rand(0, (count($empleados) - 1));
+            $mozo = $empleados[$random];
+            return $mozo;
+        }
+        return NULL;
+    }
+
+    public static function ExisteReserva($idCliente)
+    {
+        $mesas = self::ListarMesas();
+        foreach ($mesas as $e)
+        {
+            if ($e->idCliente == $idCliente)
+                return true;
+        }
+        return false;
+    }
+
+    public static function TraerIDCliente($idMesa): int
+    {
+        $mesas = self::ListarMesas();
+        foreach ($mesas as $e)
+        {
+            if ($e->id == $idMesa)
+                return $e->idCliente;
+        }
+        return NULL;
+    }
+
+    public static function TraerIDPedido($idMesa): int
+    {
+        $mesas = self::ListarMesas();
+        foreach ($mesas as $e)
+        {
+            if ($e->id == $idMesa)
+                return $e->idPedido;
+        }
+        return NULL;
+    }
+
+    public static function TraerIDEmpleado($idMesa): int
+    {
+        $mesas = self::ListarMesas();
+        foreach ($mesas as $e)
+        {
+            if ($e->id == $idMesa)
+                return $e->idMozo;
+        }
+        return NULL;
     }
 }
