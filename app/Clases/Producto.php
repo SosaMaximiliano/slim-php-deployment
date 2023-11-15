@@ -53,8 +53,8 @@ class Producto
             $hayStock = false;
 
             foreach ($listado as $f)
-                if ($f['id'] == $idProducto)
-                    if ($f['cantidad'] >= $cantidad)
+                if ($f->id == $idProducto)
+                    if ($f->cantidad >= $cantidad)
                     {
                         $hayStock = true;
                         break;
@@ -71,5 +71,16 @@ class Producto
         }
         else
             return true;
+    }
+
+    public static function ActualizarStock($nombre, $cantidad)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta(
+            "UPDATE producto SET cantidad = cantidad + :cantidad WHERE nombre = :nombre"
+        );
+        $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
+        $consulta->bindValue(':cantidad', $cantidad, PDO::PARAM_STR);
+        $consulta->execute();
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface as Response;
+//use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Psr7\Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
@@ -11,7 +12,7 @@ class AuthMiddleware
         $parametros = $request->getQueryParams();
         $sector = $parametros['sector'];
 
-        if ($sector === 'admin')
+        if ($sector === 'Mozo')
         {
             $response = $handler->handle($request);
         }

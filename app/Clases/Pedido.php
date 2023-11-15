@@ -4,83 +4,60 @@ include_once 'Producto.php';
 
 class Pedido
 {
-    // public static function AltaPedido($productos, $idCliente)
-    // {
-    //     $date = new DateTime();
-    //     $fecha = $date->format('Y-m-d');
-    //     $hora = $date->format('H:i:sa');
-    //     $tiempo = '00:30:00';
-
-    //     $objAccesoDatos = AccesoDatos::obtenerInstancia();
-    //     foreach ($productos as $e)
-    //     {
-    //         $idProducto = $e['id'];
-    //         $cantidad = $e['cantidad'];
-
-    //         #PREPARO LA QUERY DEL PEDIDO
-    //         $consultaInsert = $objAccesoDatos->prepararConsulta(
-    //             "INSERT INTO pedido (idProducto,fecha,tiempo,cantidad,estado,idCliente) 
-    //                     VALUES (:idProducto,:fecha,:tiempo,:cantidad,:estado,:idCliente)"
-    //         );
-    //         $consultaInsert->bindValue(':idProducto', $idProducto, PDO::PARAM_INT);
-    //         $consultaInsert->bindValue(':tiempo', $tiempo, PDO::PARAM_STR);
-    //         $consultaInsert->bindValue(':fecha', $fecha, PDO::PARAM_STR);
-    //         $consultaInsert->bindValue(':estado', "En preparacion", PDO::PARAM_STR);
-    //         $consultaInsert->bindValue(':cantidad', $cantidad, PDO::PARAM_INT);
-    //         $consultaInsert->bindValue(':idCliente', $idCliente, PDO::PARAM_INT);
-    //         $consultaInsert->execute();
-
-    //         self::ActualizoStock($idProducto, $cantidad);
-    //     }
-
-    //     // #TRAIGO EL ID DEL PEDIDO
-    //     // $ultimoId = $objAccesoDatos->obtenerUltimoId();
-    //     // return $ultimoId;
-    // }
-
-    public static function AltaPedido($idProducto, $cantidad)
+    public static function AltaPedido($productos, $idCliente)
     {
-        $date = new DateTime();
-        $fecha = $date->format('Y-m-d');
-        $hora = $date->format('H:i:sa');
-        $tiempo = '00:30:00';
-
+        $pedido = array();
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        foreach ($productos as $e)
+        {
+            $idProducto = $e['id'];
+            $producto = Producto::BuscarProductoID($idProducto);
+            $producto = $producto->nombre;
+            $cantidad = $e['cantidad'];
+            $pedido[] = [$producto => $cantidad];
+            self::ActualizoStock($idProducto, $cantidad);
+        }
 
         #PREPARO LA QUERY DEL PEDIDO
+        $codigo = Pedido::GenerarCodigo();
         $consultaInsert = $objAccesoDatos->prepararConsulta(
-            "INSERT INTO pedido (idProducto,fecha,tiempo,cantidad,estado,idCliente) 
-                        VALUES (:idProducto,:fecha,:tiempo,:cantidad,:estado,:idCliente)"
+            "INSERT INTO pedido2 (idProducto,producto,cantidad,estado,idCliente,codigo) 
+                        VALUES (:idProducto,:producto,:cantidad,:estado,:idCliente,:codigo)"
         );
         $consultaInsert->bindValue(':idProducto', $idProducto, PDO::PARAM_INT);
-        $consultaInsert->bindValue(':tiempo', $tiempo, PDO::PARAM_STR);
-        $consultaInsert->bindValue(':fecha', $fecha, PDO::PARAM_STR);
-        $consultaInsert->bindValue(':estado', "En preparacion", PDO::PARAM_STR);
+        //$consultaInsert->bindValue(':tiempo', $tiempo, PDO::PARAM_STR);
+        $consultaInsert->bindValue(':producto', json_encode($pedido), PDO::PARAM_STR);
+        $consultaInsert->bindValue(':estado', "Pedido", PDO::PARAM_STR);
         $consultaInsert->bindValue(':cantidad', $cantidad, PDO::PARAM_INT);
-        //
-        $idCliente = 0;
-        //
         $consultaInsert->bindValue(':idCliente', $idCliente, PDO::PARAM_INT);
+        $consultaInsert->bindValue(':codigo', $codigo, PDO::PARAM_STR);
         $consultaInsert->execute();
 
-        self::ActualizoStock($idProducto, $cantidad);
-
-        #TRAIGO EL ID DEL PEDIDO
-        $ultimoId = $objAccesoDatos->obtenerUltimoId();
-        return $ultimoId;
+        return $codigo;
     }
 
     public static function ListarPedidos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "SELECT * FROM pedido"
+            "SELECT * FROM pedido2"
         );
         $consulta->execute();
 
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Pedido');
     }
 
+    public static function ListarPedidosPorEstado($estado)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta(
+            "SELECT * FROM pedido WHERE estado = :estado"
+        );
+        $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
+        $consulta->execute();
+
+        return $consulta->fetchAll(PDO::FETCH_CLASS, 'Pedido');
+    }
 
     public static function TraerPedido($idPedido)
     {
@@ -88,6 +65,16 @@ class Pedido
         foreach ($pedidos as $e)
         {
             if ($e->id == $idPedido)
+                return $e;
+        }
+    }
+
+    public static function TraerPedidoPorNombre($pedido)
+    {
+        $pedidos = self::ListarPedidos();
+        foreach ($pedidos as $e)
+        {
+            if ($e->producto == $pedido)
                 return $e;
         }
     }
@@ -137,5 +124,16 @@ class Pedido
         $consultaUpdate->bindValue(':cantidad', $cantAux, PDO::PARAM_INT);
         $consultaUpdate->bindValue(':id', $idProducto, PDO::PARAM_INT);
         $consultaUpdate->execute();
+    }
+
+    public static function GenerarCodigo()
+    {
+        $caracteres = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $codigo = '';
+
+        for ($i = 0; $i < 5; $i++)
+            $codigo .= $caracteres[rand(0, strlen($caracteres) - 1)];
+
+        return $codigo;
     }
 }

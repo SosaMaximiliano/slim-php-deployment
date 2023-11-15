@@ -1,4 +1,8 @@
 <?php
+
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+
 require_once './Clases/Mesa.php';
 
 class CMesa
@@ -10,10 +14,14 @@ class CMesa
         "Cerrada"
     );
 
-    public static function AltaMesa($idCliente)
+    public static function AltaMesa(Request $request, Response $response, $args)
     {
         #HACER VALIDACIONES
         #UN CLIENTE NO PUEDE TENER MAS DE UNA MESA
+
+        $parametros = $request->getParsedBody();
+        $idCliente = $parametros['idCliente'];
+
         if (Cliente::ExisteCliente($idCliente))
         {
             if (!Mesa::ExisteReserva($idCliente))
@@ -23,24 +31,74 @@ class CMesa
                 $idMozo = $mozo->id;
                 $idPedido = $pedido->idPedido;
                 if ($idPedido != NULL)
-                    Mesa::AltaMesa($idPedido, $idMozo, $idCliente);
+                    try
+                    {
+                        Mesa::AltaMesa($idPedido, $idMozo, $idCliente);
+                        $payload = json_encode("La mesa fue dada de alta");
+                        $response->getBody()->write($payload);
+                        return $response->withHeader('Content-Type', 'application/json');
+                    }
+                    catch (Exception $e)
+                    {
+                        $payload = json_encode("No se pudo abrir la mesa. {$e->getMessage()}");
+                        $response->getBody()->write($payload);
+                        return $response->withHeader('Content-Type', 'application/json');
+                    }
                 else
-                    echo "No existe pedido";
+                {
+                    $payload = json_encode("No existe pedido.");
+                    $response->getBody()->write($payload);
+                    return $response->withHeader('Content-Type', 'application/json');
+                }
             }
             else
-                echo "Ya existe una reserva para ese cliente";
+            {
+                $payload = json_encode("Ya existe una reserva para ese cliente.");
+                $response->getBody()->write($payload);
+                return $response->withHeader('Content-Type', 'application/json');
+            }
         }
         else
-            echo "No existe cliente";
+        {
+            $payload = json_encode("No existe cliente.");
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
+        }
     }
 
-    public static function ListarMesas()
+    public static function ListarMesas(Request $request, Response $response)
     {
-        return Mesa::ListarMesas();
+        $payload = json_encode(Mesa::ListarMesas());
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
     }
 
-    public static function CambiarEstadoMesa($idMesa, $estado)
+    public static function CambiarEstadoMesa(Request $request, Response $response)
     {
-        Mesa::CambiarEstadoMesa($idMesa, $estado);
+        $parametros = $request->getParsedBody();
+        $idMesa = $parametros['idMesa'];
+        $estado = $parametros['estado'];
+        if (in_array(self::$estados, $estado))
+        {
+            try
+            {
+                Mesa::CambiarEstadoMesa($idMesa, $estado);
+                $payload = json_encode("El estado de la mesa cambio a {$estado}");
+                $response->getBody()->write($payload);
+                return $response->withHeader('Content-Type', 'application/json');
+            }
+            catch (Exception $e)
+            {
+                $payload = json_encode("Error al cambiar estado de la mesa. {$e->getMessage()}");
+                $response->getBody()->write($payload);
+                return $response->withHeader('Content-Type', 'application/json');
+            }
+        }
+        else
+        {
+            $payload = json_encode("Estado no permitido.");
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
+        }
     }
 }

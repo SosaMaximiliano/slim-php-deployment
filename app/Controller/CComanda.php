@@ -7,12 +7,12 @@ class CComanda
     public static function AltaComanda($idMesa)
     {
         $idCliente = Mesa::TraerIDCliente($idMesa);
-        $idPedido = Mesa::TraerIDPedido($idMesa);
         $idEmpleado = Mesa::TraerIDEmpleado($idMesa);
-        //$pedido = Cliente::TraerPedido($idPedido);
-        $pedido = "pedido";
-        //$fecha = date('Y-m-d');
-        //$hora = time("H:i:sa");
-        Comanda::AltaComanda($idMesa, $idCliente, $idEmpleado, $idPedido, $pedido);
+        $pedido = Cliente::TraerPedido($idCliente);
+        var_dump($pedido);
+        $producto = $pedido->pedido;
+        $idPedido = $pedido->idPedido;
+        $cliente = $pedido->nombre;
+        Comanda::AltaComanda($idMesa, $idCliente, $cliente, $idEmpleado, $idPedido, $producto);
     }
 }

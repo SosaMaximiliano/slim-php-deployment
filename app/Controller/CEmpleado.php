@@ -1,50 +1,61 @@
 <?php
+
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+
 require_once './Clases/Empleado.php';
 
 class CEmpleado
 {
-    public static function IngresarEmpleado($request)
+    public static function IngresarEmpleado(Request $request, Response $response, $args)
     {
         $parametros = $request->getParsedBody();
-        if (Empleado::ValidarDatos($parametros))
+        var_dump($parametros);
+        $nombre = $parametros['nombre'];
+        $apellido = $parametros['apellido'];
+        try
         {
-            $nombre = $parametros['nombre'];
-            $apellido = $parametros['apellido'];
-            #VALIDAR QUE NO EXISTA
-            if (Empleado::BuscarEmpleadoPorNombre($nombre, $apellido) == NULL)
-                try
-                {
-                    Empleado::AltaEmpleado($nombre, $apellido);
-                    echo "Empleado creado exitosamente.";
-                    return true;
-                }
-                catch (Exception $e)
-                {
-                    echo "Error al crear empleado. {$e->getMessage()}";
-                    return false;
-                }
-            else
-                throw new Exception("El empleado ya se encuentra dado de alta", 300);
+            Empleado::AltaEmpleado($nombre, $apellido);
+            $payload = json_encode("Empleado creado exitosamente.");
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
+        }
+        catch (Exception $e)
+        {
+            $payload = json_encode("Error al crear empleado. {$e->getMessage()}");
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
         }
     }
 
-    public static function ListarEmpleados()
+    public static function ListarEmpleados(Request $request, Response $response, $args)
     {
-        return Empleado::ListarEmpleados();
+        $lista = Empleado::ListarEmpleados();
+        $payload = json_encode(array("listaDeEmpleados" => $lista));
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
     }
 
-    public static function ListarSector($sector)
+    public static function ListarEmpleadosPorSector(Request $request, Response $response, $args)
     {
-        return Empleado::ListarPorSector($sector);
+        $parametros = $request->getQueryParams();
+        $sector = $parametros['sector'];
+        $lista = Empleado::ListarPorSector($sector);
+        $payload = json_encode(array("listaDeEmpleados" => $lista));
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
     }
 
-    public static function AsignarPuesto($idEmpleado, $sector)
+    public static function AsignarSector(Request $request, Response $response, $args)
     {
         $sectores = array("Cocinero", "Bartender", "Mozo", "Cervecero");
 
         #VALIDAR QUE EL EMPLEADO EXISTA
+        $parametros = $request->getParsedBody();
+        $idEmpleado = $parametros['id'];
+        $sector = $parametros['sector'];
 
-        if (Empleado::BuscarEmpleadoPorID($idEmpleado))
+        if (Empleado::BuscarEmpleadoPorID($idEmpleado) != NULL)
         {
             if (!in_array($sector, $sectores))
             {
@@ -55,7 +66,10 @@ class CEmpleado
             {
                 try
                 {
-                    return Empleado::AsignarSector($idEmpleado, $sector);
+                    Empleado::AsignarSector($idEmpleado, $sector);
+                    $payload = json_encode("Sector asignado correctamente");
+                    $response->getBody()->write($payload);
+                    return $response->withHeader('Content-Type', 'application/json');
                 }
                 catch (Exception $e)
                 {

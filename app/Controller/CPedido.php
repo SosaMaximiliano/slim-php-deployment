@@ -1,4 +1,8 @@
 <?php
+
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+
 require_once './Clases/Pedido.php';
 
 class CPedido
@@ -10,33 +14,62 @@ class CPedido
         "Entregado"
     );
 
-    // public static function AltaPedido($productos, $idCliente)
-    // {
-    //     #REVISO QUE HAYA STOCK DEL PRODUCTO
-    //     if (Producto::HayStock($productos))
-    //     {
-    //         Pedido::AltaPedido($productos, $idCliente);
-    //     }
-    // }
-
-    public static function AltaPedido($idProducto, $cantidad)
+    public static function AltaPedido(Request $request, Response $response, $args)
     {
+        $parametros = $request->getParsedBody();
+        $productos = $parametros['productos'];
+        $idCliente = $parametros['idCliente'];
+        #CONFIRMAR QUE EL CLIENTE EXISTA
         #REVISO QUE HAYA STOCK DEL PRODUCTO
-        Pedido::AltaPedido($idProducto, $cantidad);
+        if (Producto::HayStock($productos))
+        {
+            try
+            {
+                Pedido::AltaPedido($productos, $idCliente);
+                $payload = json_encode("Pedido creado");
+                $response->getBody()->write($payload);
+                return $response->withHeader('Content-Type', 'application/json');
+            }
+            catch (Exception $e)
+            {
+                $payload = json_encode("No se pudo tomar el pedido. {$e->getMessage()}");
+                $response->getBody()->write($payload);
+                return $response->withHeader('Content-Type', 'application/json');
+            }
+            #PASO EL PEDIDO A LA COMANDA Y CAMBIO EL ESTADO A "EN PREPARACION"
+        }
     }
 
-    public static function ListarPedidos()
+    public static function ListarPedidos(Request $request, Response $response, $args)
     {
-        return Pedido::ListarPedidos();
+        $payload = json_encode(Pedido::ListarPedidos());
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
     }
 
-    public static function CambiarEstadoPedido($idPedido, $estado)
+    public static function CambiarEstadoPedido(Request $request, Response $response, $args)
     {
+        $parametros = $request->getParsedBody();
+        $idPedido = $parametros['idPedido'];
+        $estado = $parametros['estado'];
+
         if (Pedido::ExistePedido($idPedido))
         {
             if (in_array($estado, self::$estados))
             {
-                Pedido::CambiarEstadoPedido($idPedido, $estado);
+                try
+                {
+                    Pedido::CambiarEstadoPedido($idPedido, $estado);
+                    $payload = json_encode("Estado del pedido cambiado a {$estado}");
+                    $response->getBody()->write($payload);
+                    return $response->withHeader('Content-Type', 'application/json');
+                }
+                catch (Exception $e)
+                {
+                    $payload = json_encode("Error al cambiar de estado. {$e->getMessage()}");
+                    $response->getBody()->write($payload);
+                    return $response->withHeader('Content-Type', 'application/json');
+                }
             }
             else
                 throw new Exception("Estado incorrecto", 200);

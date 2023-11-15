@@ -1,7 +1,5 @@
 <?php
 
-include_once 'Pedido.php';
-
 class Cliente
 {
     public static function AltaCliente($nombre)
@@ -15,12 +13,6 @@ class Cliente
         $consultaInsert->execute();
 
         return $objAccesoDatos->obtenerUltimoId();
-    }
-
-    public static function HacerPedido($pedidos, $idCliente)
-    {
-        #EL CLIENTE TIENE QUE HACER LOS PEDIDOS POR NOMBRE
-        Pedido::AltaPedido($pedidos, $idCliente);
     }
 
     public static function ListarClientes()

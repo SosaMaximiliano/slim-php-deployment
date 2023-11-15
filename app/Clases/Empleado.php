@@ -49,7 +49,7 @@ class Empleado
         $consulta->bindValue(':sector', $sector, PDO::PARAM_STR);
         $consulta->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
         $consulta->execute();
-        return true;
+        return $objAccesoDatos->obtenerUltimoId();
     }
 
     public static function ValidarDatos($parametros)
