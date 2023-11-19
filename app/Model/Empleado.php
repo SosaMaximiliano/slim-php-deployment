@@ -7,11 +7,12 @@ class Empleado
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "INSERT INTO empleado (nombre,apellido) 
-            VALUES (:nombre, :apellido)"
+            "INSERT INTO empleado (nombre,apellido,clave) 
+            VALUES (:nombre,:apellido,:clave)"
         );
         $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
         $consulta->bindValue(':apellido', $apellido, PDO::PARAM_STR);
+        $consulta->bindValue(':clave', $apellido, PDO::PARAM_STR);
         $consulta->execute();
     }
 

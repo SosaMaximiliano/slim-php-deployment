@@ -3,7 +3,7 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-require_once './Clases/Cliente.php';
+require_once './Model/Cliente.php';
 
 class CCliente
 {

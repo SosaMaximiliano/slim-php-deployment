@@ -3,7 +3,7 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-require_once './Clases/Mesa.php';
+require_once './Model/Mesa.php';
 
 class CMesa
 {

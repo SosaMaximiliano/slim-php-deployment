@@ -16,8 +16,12 @@ require __DIR__ . '/./Controller/CMesa.php';
 require __DIR__ . '/./Controller/CPedido.php';
 require __DIR__ . '/./Controller/CCliente.php';
 require __DIR__ . '/./Controller/CComanda.php';
+require __DIR__ . '/./Controller/CAuthJWT.php';
 require __DIR__ . '/./Middleware/AuthMiddleware.php';
 require __DIR__ . '/./Middleware/ValidadorMiddleware.php';
+require __DIR__ . '/./Middleware/CheckTokenMiddleware.php';
+require __DIR__ . '/./Middleware/CheckMozoMiddleware.php';
+require __DIR__ . '/./Middleware/CheckSocioMiddleware.php';
 
 
 // Instantiate App
@@ -34,72 +38,32 @@ $app->addBodyParsingMiddleware();
 
 // Routes
 
-$app->group('/empleados', function (RouteCollectorProxy $group)
+$app->post('/login', \CAuthJWT::class . ':CrearTokenLogin');
+
+$app->group('/usuarios', function (RouteCollectorProxy $group)
 {
-    $group->post('/alta', \CEmpleado::class . ':IngresarEmpleado')
-        ->add(new ValidadorMiddleware());
-    $group->get('/listar', \CEmpleado::class . ':ListarEmpleados');
-    $group->get('/listarporsector', \CEmpleado::class . ':ListarEmpleadosPorSector');
-    $group->put('/asignarsector', \CEmpleado::class . ':AsignarSector');
+    $group->post('/empleado_alta', \CEmpleado::class . ':IngresarEmpleado')->add(new ValidadorMiddleware())->add(new CheckSocioMiddleware());
+    $group->get('/empleado_listar', \CEmpleado::class . ':ListarEmpleados'); //->add(new CheckSocioMiddleware());
+    $group->get('/empleado_listarporsector', \CEmpleado::class . ':ListarEmpleadosPorSector'); //->add(new CheckSocioMiddleware());
+    $group->put('/empleado_asignarsector', \CEmpleado::class . ':AsignarSector'); //->add(new CheckSocioMiddleware());
     //$group->delete('/borrarUsuario', \CEmpleado::class . ':BorrarUno');
-});
+
+    $group->post('/producto_alta', \CProducto::class . ':AgregarProducto');
+    $group->get('/producto_listar', \CProducto::class . ':ListarProductos');
+    $group->get('/producto_buscarporid', \CProducto::class . ':BuscarProductoID');
+    $group->get('/producto_buscarpornombre', \CProducto::class . ':BuscarProductoNombre');
+
+    $group->post('/pedido_alta', \CPedido::class . ':AltaPedido')->add(new CheckMozoMiddleware());
+    $group->get('/pedido_listar', \CPedido::class . ':ListarPedidos')->add(new CheckMozoMiddleware());
+    $group->get('/pedido_listarporcliente', \CPedido::class . ':ListarPedidosPorCliente')->add(new CheckMozoMiddleware());
+    $group->put('/pedido_cambiarestado', \CPedido::class . ':CambiarEstadoPedido')->add(new CheckMozoMiddleware());
+
+    $group->post('/mesa_alta', \CMesa::class . ':AltaMesa');
+    $group->get('/mesa_listar', \CMesa::class . ':ListarMesas');
+    //$group->get('/mesa_listarporcliente', \CMesa::class . ':ListarPedidosPorCliente');
+    $group->put('/mesa_cambiarestado', \CMesa::class . ':CambiarEstadoMesa');
+})->add(new CheckTokenMiddleware());
 // })->add(new AuthMiddleware());
-
-$app->group('/productos', function (RouteCollectorProxy $group)
-{
-    $group->post('/alta', \CProducto::class . ':AgregarProducto');
-    $group->get('/listar', \CProducto::class . ':ListarProductos');
-    $group->get('/buscarporid', \CProducto::class . ':BuscarProductoID');
-    $group->get('/buscarpornombre', \CProducto::class . ':BuscarProductoNombre');
-});
-
-$app->group('/pedidos', function (RouteCollectorProxy $group)
-{
-    $group->post('/alta', \CPedido::class . ':AltaPedido');
-    $group->get('/listar', \CPedido::class . ':ListarPedidos');
-    $group->get('/listarporcliente', \CPedido::class . ':ListarPedidosPorCliente');
-    $group->put('/cambiarestado', \CPedido::class . ':CambiarEstadoPedido');
-});
-
-$app->group('/mesas', function (RouteCollectorProxy $group)
-{
-    $group->post('/alta', \CMesa::class . ':AltaMesa');
-    $group->get('/listar', \CMesa::class . ':ListarMesas');
-    //$group->get('/listarporcliente', \CMesa::class . ':ListarPedidosPorCliente');
-    $group->put('/cambiarestado', \CMesa::class . ':CambiarEstadoMesa');
-});
-
-#region MESAS
-// $app->post('/AltaMesa', function (Request $request, Response $response)
-// {
-//     $data = $request->getParsedBody();
-//     $idCliente = $data['idCliente'];
-//     CMesa::AltaMesa($idCliente);
-//     $payload = json_encode(array('message' => 'Mesa agregada con exito'));
-//     $response->getBody()->write($payload);
-//     return $response->withHeader('Content-Type', 'application/json');
-// });
-
-// $app->get('/ListarMesas', function (Request $request, Response $response)
-// {
-//     $salida = CMesa::ListarMesas();
-//     $payload = json_encode(array('message' => $salida));
-//     $response->getBody()->write($payload);
-//     return $response->withHeader('Content-Type', 'application/json');
-// });
-
-// $app->put('/CambiarEstadoMesa', function (Request $request, Response $response)
-// {
-//     $data = $request->getParsedBody();
-//     $idMesa = $data['id'];
-//     $estado = $data['estado'];
-//     CMesa::CambiarEstadoMesa($idMesa, $estado);
-//     $payload = json_encode(array('message' => "Estado cambiado"));
-//     $response->getBody()->write($payload);
-//     return $response->withHeader('Content-Type', 'application/json');
-// });
-
-#endregion
 
 #region CLIENTES
 $app->post('/AltaCliente', function (Request $request, Response $response)

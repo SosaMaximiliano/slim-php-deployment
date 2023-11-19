@@ -1,6 +1,6 @@
 <?php
-require_once './Clases/Comanda.php';
-require_once './Clases/Mesa.php';
+require_once './Model/Comanda.php';
+require_once './Model/Mesa.php';
 
 class CComanda
 {
