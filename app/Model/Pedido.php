@@ -1,36 +1,40 @@
 <?php
 
 include_once 'Producto.php';
+include_once '../app/Utils/Utils.php';
 
 class Pedido
 {
-    public static function AltaPedido($productos, $idCliente)
+    public static function AltaPedido($productos, $idMesa)
     {
         $pedido = array();
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $tiempoEstimado = '00:00';
+        $valorTotal = 0;
         foreach ($productos as $e)
         {
             $idProducto = $e['id'];
             $producto = Producto::BuscarProductoID($idProducto);
-            $producto = $producto->nombre;
+            $productoNombre = $producto->Nombre;
             $cantidad = $e['cantidad'];
-            $pedido[] = [$producto => $cantidad];
+            $pedido[] = [$productoNombre => $cantidad];
             self::ActualizoStock($idProducto, $cantidad);
+
+            $tiempoEstimado = self::CalcularTiempoEstimado($tiempoEstimado, $producto->Tiempo);
+            $valorTotal += $producto->Precio;
         }
 
         #PREPARO LA QUERY DEL PEDIDO
-        $codigo = Pedido::GenerarCodigo();
+        $codigo = Utils::GenerarCodigo();
         $consultaInsert = $objAccesoDatos->prepararConsulta(
-            "INSERT INTO pedido2 (idProducto,producto,cantidad,estado,idCliente,codigo) 
-                        VALUES (:idProducto,:producto,:cantidad,:estado,:idCliente,:codigo)"
+            "INSERT INTO Pedido (Productos,ID_Mesa,CodigoUnico,TiempoEstimado,ValorTotal) 
+                        VALUES (:productos,:idMesa,:codigo,:tiempo,:valorTotal)"
         );
-        $consultaInsert->bindValue(':idProducto', $idProducto, PDO::PARAM_INT);
-        //$consultaInsert->bindValue(':tiempo', $tiempo, PDO::PARAM_STR);
-        $consultaInsert->bindValue(':producto', json_encode($pedido), PDO::PARAM_STR);
-        $consultaInsert->bindValue(':estado', "Pedido", PDO::PARAM_STR);
-        $consultaInsert->bindValue(':cantidad', $cantidad, PDO::PARAM_INT);
-        $consultaInsert->bindValue(':idCliente', $idCliente, PDO::PARAM_INT);
+        $consultaInsert->bindValue(':tiempo', $tiempoEstimado, PDO::PARAM_STR);
+        $consultaInsert->bindValue(':productos', json_encode($pedido), PDO::PARAM_STR);
+        $consultaInsert->bindValue(':idMesa', $idMesa, PDO::PARAM_INT);
         $consultaInsert->bindValue(':codigo', $codigo, PDO::PARAM_STR);
+        $consultaInsert->bindValue(':valorTotal', $valorTotal, PDO::PARAM_INT);
         $consultaInsert->execute();
 
         return $codigo;
@@ -40,7 +44,7 @@ class Pedido
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "SELECT * FROM pedido2"
+            "SELECT * FROM Pedido"
         );
         $consulta->execute();
 
@@ -51,7 +55,7 @@ class Pedido
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "SELECT * FROM pedido WHERE estado = :estado"
+            "SELECT * FROM Pedido WHERE Estado = :estado"
         );
         $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
         $consulta->execute();
@@ -64,7 +68,7 @@ class Pedido
         $pedidos = self::ListarPedidos();
         foreach ($pedidos as $e)
         {
-            if ($e->id == $idPedido)
+            if ($e->ID == $idPedido)
                 return $e;
         }
     }
@@ -74,7 +78,7 @@ class Pedido
         $pedidos = self::ListarPedidos();
         foreach ($pedidos as $e)
         {
-            if ($e->producto == $pedido)
+            if ($e->Producto == $pedido)
                 return $e;
         }
     }
@@ -83,7 +87,7 @@ class Pedido
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "UPDATE pedido SET estado = :estado WHERE id = :id"
+            "UPDATE Pedido SET Estado = :estado WHERE ID = :id"
         );
         $consulta->bindValue(':id', $idPedido, PDO::PARAM_STR);
         $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
@@ -95,7 +99,7 @@ class Pedido
         $pedidos = self::ListarPedidos();
         foreach ($pedidos as $e)
         {
-            if ($e->id == $idPedido)
+            if ($e->ID == $idPedido)
                 return true;
         }
         return false;
@@ -106,7 +110,7 @@ class Pedido
         $pedidos = self::ListarPedidos();
         foreach ($pedidos as $e)
         {
-            if ($e->id == $idPedido)
+            if ($e->ID == $idPedido)
                 return $e;
         }
         return NULL;
@@ -116,24 +120,32 @@ class Pedido
     {
         #ACTUALIZO LA CANTIDAD DE PRODUCTOS
         $producto = Producto::BuscarProductoID($idProducto);
-        $cantAux = $producto->cantidad - $cantidad;
+        $cantAux = $producto->Cantidad - $cantidad;
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consultaUpdate = $objAccesoDatos->prepararConsulta(
-            "UPDATE producto SET cantidad = :cantidad WHERE id = :id"
+            "UPDATE Producto SET Cantidad = :cantidad WHERE ID = :id"
         );
         $consultaUpdate->bindValue(':cantidad', $cantAux, PDO::PARAM_INT);
         $consultaUpdate->bindValue(':id', $idProducto, PDO::PARAM_INT);
         $consultaUpdate->execute();
     }
 
-    public static function GenerarCodigo()
+    private static function CalcularTiempoEstimado($tPedido, $tProducto)
     {
-        $caracteres = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $codigo = '';
+        $tiempoPr = explode(':', $tProducto);
+        $horasPr = intval($tiempoPr[0]);
+        $minutosPr = intval($tiempoPr[1]);
 
-        for ($i = 0; $i < 5; $i++)
-            $codigo .= $caracteres[rand(0, strlen($caracteres) - 1)];
+        $tiempoPd = explode(':', $tPedido);
+        $horasPd = intval($tiempoPd[0]);
+        $minutosPd = intval($tiempoPd[1]);
 
-        return $codigo;
+        $tprAux = ($horasPr * 60 + $minutosPr);
+        $tpdAux = ($horasPd * 60 + $minutosPd);
+
+        if ($tprAux > $tpdAux)
+            return sprintf("%02d:%02d", floor($tprAux / 60), $tprAux % 60);
+        else
+            return sprintf("%02d:%02d", floor($tpdAux / 60), $tpdAux % 60);
     }
 }

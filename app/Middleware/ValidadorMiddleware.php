@@ -10,8 +10,8 @@ class ValidadorMiddleware
     public function __invoke(Request $request, RequestHandler $handler): Response
     {
         $parametros = $request->getParsedBody();
-        $nombre = $parametros['nombre'];
-        $apellido = $parametros['apellido'];
+        $nombre = $parametros['Nombre'];
+        $apellido = $parametros['Apellido'];
         if (Empleado::ValidarDatos($parametros))
         {
             #VALIDAR QUE NO EXISTA

@@ -6,16 +6,17 @@ class CAuthJWT
     public function CrearTokenLogin($request, $response, $args)
     {
         $parametros = $request->getParsedBody();
-        $usuario = Empleado::BuscarEmpleadoPorID($parametros['id']);
+        $usuario = Empleado::BuscarEmpleadoPorID($parametros['ID']);
         if ($usuario != null)
         {
-            if ($parametros['clave'] == $usuario->clave)
+            if ($parametros['Clave'] == $usuario->Clave)
             {
                 $datos = array(
-                    'id' => $usuario->id,
-                    'usuario' => $usuario->nombre,
-                    'clave' => $usuario->clave,
-                    'sector' => $usuario->sector
+                    'ID' => $usuario->ID,
+                    'Nombre' => $usuario->Nombre,
+                    'Apellido' => $usuario->Apellido,
+                    'Clave' => $usuario->Clave,
+                    'Sector' => $usuario->Sector
                 );
                 $token = AuthJWT::CrearToken($datos);
                 $payload = json_encode($token);

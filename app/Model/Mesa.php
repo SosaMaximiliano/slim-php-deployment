@@ -2,37 +2,45 @@
 
 include_once 'Empleado.php';
 include_once 'Cliente.php';
+include_once '../app/Utils/Utils.php';
 //include_once 'Pedido.php';
 
 class Mesa
 {
-    public static function AltaMesa($idPedido, $idMozo, $idCliente)
+    public static function AltaMesa()
     {
-        $estado = "Con cliente esperando pedido";
+        $estado = 'Libre';
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consultaInsert = $objAccesoDatos->prepararConsulta(
-            "INSERT INTO mesa (idMozo,idPedido,estado,idCliente) VALUES (:idMozo,:idPedido,:estado,:idCliente)",
+            "INSERT INTO Mesa (Estado) 
+            VALUES (:estado)",
         );
         $consultaInsert->bindValue(':estado', $estado, PDO::PARAM_STR);
-        $consultaInsert->bindValue(':idMozo', $idMozo, PDO::PARAM_INT);
-        $consultaInsert->bindValue(':idPedido', $idPedido, PDO::PARAM_INT);
-        $consultaInsert->bindValue(':idCliente', $idCliente, PDO::PARAM_INT);
         $consultaInsert->execute();
-
-        #ACTUALIZO MESAS MOZO
-        $consultaUpdate = $objAccesoDatos->prepararConsulta(
-            "UPDATE empleado SET mesasAcargo = mesasAcargo + 1 WHERE id = :idMozo"
-        );
-        $consultaUpdate->bindValue(':idMozo', $idMozo, PDO::PARAM_INT);
-        $consultaUpdate->execute();
     }
 
+    public static function AbrirMesa($idMesa, $idEmpleado)
+    {
+        $estado = 'Con cliente esperando pedido';
+        $codigo = Utils::GenerarCodigo();
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consultaUpdate = $objAccesoDatos->prepararConsulta(
+            "UPDATE Mesa 
+            SET ID_Empleado = :idEmpleado, Estado = :estado, CodigoUnico = :codigoUnico 
+            WHERE ID = :id"
+        );
+        $consultaUpdate->bindValue(':id', $idMesa, PDO::PARAM_INT);
+        $consultaUpdate->bindValue(':estado', $estado, PDO::PARAM_STR);
+        $consultaUpdate->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
+        $consultaUpdate->bindValue(':codigoUnico', $codigo, PDO::PARAM_STR);
+        $consultaUpdate->execute();
+    }
 
     public static function ListarMesas()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "SELECT * FROM mesa"
+            "SELECT * FROM Mesa"
         );
         $consulta->execute();
 
@@ -43,44 +51,28 @@ class Mesa
     {
         $mesas = self::ListarMesas();
         foreach ($mesas as $e)
-            if ($e->id == $idMesa)
+            if ($e->ID == $idMesa)
             {
                 $objAccesoDatos = AccesoDatos::obtenerInstancia();
                 $consulta = $objAccesoDatos->prepararConsulta(
-                    "UPDATE mesa SET estado = :estado WHERE id = :idMesa"
+                    "UPDATE Mesa SET Estado = :estado WHERE ID = :idMesa"
                 );
                 $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
                 $consulta->bindValue(':idMesa', $idMesa, PDO::PARAM_INT);
                 $consulta->execute();
-                echo "Estado de la mesa actualizado";
+                echo "Estado de la mesa actualizado a {$estado}";
                 return;
             }
     }
 
-    public static function TraerMozo()
-    {
-        $empleados = Empleado::ListarPorSector("Mozo");
-        #SI EL MOZO ESTA ATENDIENDO MENOS DE CINCO MESAS
-        $disponibles = array_filter($empleados, function ($mozo)
-        {
-            return $mozo->mesasACargo < 5;
-        });
 
-        if (count($disponibles) > 0)
-        {
-            $random = rand(0, (count($empleados) - 1));
-            $mozo = $empleados[$random];
-            return $mozo;
-        }
-        return NULL;
-    }
 
     public static function ExisteReserva($idCliente)
     {
         $mesas = self::ListarMesas();
         foreach ($mesas as $e)
         {
-            if ($e->idCliente == $idCliente)
+            if ($e->ID_CLiente == $idCliente)
                 return true;
         }
         return false;
@@ -91,8 +83,8 @@ class Mesa
         $mesas = self::ListarMesas();
         foreach ($mesas as $e)
         {
-            if ($e->id == $idMesa)
-                return $e->idCliente;
+            if ($e->ID == $idMesa)
+                return $e->ID_Cliente;
         }
         return NULL;
     }
@@ -102,8 +94,8 @@ class Mesa
         $mesas = self::ListarMesas();
         foreach ($mesas as $e)
         {
-            if ($e->id == $idMesa)
-                return $e->idPedido;
+            if ($e->ID == $idMesa)
+                return $e->ID_Pedido;
         }
         return NULL;
     }
@@ -113,8 +105,8 @@ class Mesa
         $mesas = self::ListarMesas();
         foreach ($mesas as $e)
         {
-            if ($e->id == $idMesa)
-                return $e->idMozo;
+            if ($e->ID == $idMesa)
+                return $e->ID_Empleado;
         }
         return NULL;
     }

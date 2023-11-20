@@ -17,15 +17,14 @@ class CPedido
     public static function AltaPedido(Request $request, Response $response, $args)
     {
         $parametros = $request->getParsedBody();
-        $productos = $parametros['productos'];
-        $idCliente = $parametros['idCliente'];
-        #CONFIRMAR QUE EL CLIENTE EXISTA
+        $productos = $parametros['Productos'];
+        $idMesa = $parametros['ID_Mesa'];
         #REVISO QUE HAYA STOCK DEL PRODUCTO
         if (Producto::HayStock($productos))
         {
             try
             {
-                Pedido::AltaPedido($productos, $idCliente);
+                Pedido::AltaPedido($productos, $idMesa);
                 $payload = json_encode("Pedido creado");
                 $response->getBody()->write($payload);
                 return $response->withHeader('Content-Type', 'application/json');

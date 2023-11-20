@@ -10,12 +10,12 @@ class CEmpleado
     public static function IngresarEmpleado(Request $request, Response $response, $args)
     {
         $parametros = $request->getParsedBody();
-        var_dump($parametros);
-        $nombre = $parametros['nombre'];
-        $apellido = $parametros['apellido'];
+        $nombre = $parametros['Nombre'];
+        $apellido = $parametros['Apellido'];
+        $clave = $parametros['Clave'];
         try
         {
-            Empleado::AltaEmpleado($nombre, $apellido);
+            Empleado::AltaEmpleado($nombre, $apellido, $clave);
             $payload = json_encode("Empleado creado exitosamente.");
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json');
@@ -39,7 +39,7 @@ class CEmpleado
     public static function ListarEmpleadosPorSector(Request $request, Response $response, $args)
     {
         $parametros = $request->getQueryParams();
-        $sector = $parametros['sector'];
+        $sector = $parametros['Sector'];
         $lista = Empleado::ListarPorSector($sector);
         $payload = json_encode(array("listaDeEmpleados" => $lista));
         $response->getBody()->write($payload);
@@ -52,8 +52,8 @@ class CEmpleado
 
         #VALIDAR QUE EL EMPLEADO EXISTA
         $parametros = $request->getParsedBody();
-        $idEmpleado = $parametros['id'];
-        $sector = $parametros['sector'];
+        $idEmpleado = $parametros['ID'];
+        $sector = $parametros['Sector'];
 
         if (Empleado::BuscarEmpleadoPorID($idEmpleado) != NULL)
         {

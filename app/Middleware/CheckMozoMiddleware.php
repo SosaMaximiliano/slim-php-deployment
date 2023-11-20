@@ -15,7 +15,7 @@ class CheckMozoMiddleware
         try
         {
             $data = AuthJWT::ObtenerData($token);
-            if ($data->perfil_usuario == "mozo")
+            if ($data->Sector == "Mozo")
             {
                 echo "** El usuario es mozo **";
                 $response = $handler->handle($request);

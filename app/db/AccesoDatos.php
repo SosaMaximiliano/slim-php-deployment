@@ -6,7 +6,7 @@ class AccesoDatos
 
     private function __construct()
     {
-        $dsn = 'mysql:host=localhost;dbname=TP_COMANDA;charset=utf8';
+        $dsn = 'mysql:host=localhost;dbname=TP_LA_COMANDA;charset=utf8';
         $user = 'root';
         $pass = '';
         try

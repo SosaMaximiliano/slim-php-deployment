@@ -16,51 +16,38 @@ class CMesa
 
     public static function AltaMesa(Request $request, Response $response, $args)
     {
-        #HACER VALIDACIONES
-        #UN CLIENTE NO PUEDE TENER MAS DE UNA MESA
-
-        $parametros = $request->getParsedBody();
-        $idCliente = $parametros['idCliente'];
-
-        if (Cliente::ExisteCliente($idCliente))
+        try
         {
-            if (!Mesa::ExisteReserva($idCliente))
-            {
-                $mozo = Mesa::TraerMozo();
-                $pedido = Cliente::TraerPedido($idCliente);
-                $idMozo = $mozo->id;
-                $idPedido = $pedido->idPedido;
-                if ($idPedido != NULL)
-                    try
-                    {
-                        Mesa::AltaMesa($idPedido, $idMozo, $idCliente);
-                        $payload = json_encode("La mesa fue dada de alta");
-                        $response->getBody()->write($payload);
-                        return $response->withHeader('Content-Type', 'application/json');
-                    }
-                    catch (Exception $e)
-                    {
-                        $payload = json_encode("No se pudo abrir la mesa. {$e->getMessage()}");
-                        $response->getBody()->write($payload);
-                        return $response->withHeader('Content-Type', 'application/json');
-                    }
-                else
-                {
-                    $payload = json_encode("No existe pedido.");
-                    $response->getBody()->write($payload);
-                    return $response->withHeader('Content-Type', 'application/json');
-                }
-            }
-            else
-            {
-                $payload = json_encode("Ya existe una reserva para ese cliente.");
-                $response->getBody()->write($payload);
-                return $response->withHeader('Content-Type', 'application/json');
-            }
+            Mesa::AltaMesa();
+            $payload = json_encode("Una mesa fue dada de alta");
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
         }
-        else
+        catch (Exception $e)
         {
-            $payload = json_encode("No existe cliente.");
+            $payload = json_encode("No se pudo agregar la mesa. {$e->getMessage()}");
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
+        }
+    }
+
+    public static function AbrirMesa(Request $request, Response $response, $args)
+    {
+        $parametros = $request->getParsedBody();
+        $idMesa = $parametros['ID'];
+        $mozo = Utils::DameUnMozo();
+        $idMozo = $mozo->ID;
+        try
+        {
+            Mesa::AbrirMesa($idMesa, $idMozo);
+            Empleado::SumarMesaMozo($idMozo);
+            $payload = json_encode("La mesa {$idMesa} esta siendo atendida por {$mozo->Nombre} {$mozo->Apellido}");
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
+        }
+        catch (Exception $e)
+        {
+            $payload = json_encode("Error al abrir la mesa. {$e->getMessage()}");
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json');
         }

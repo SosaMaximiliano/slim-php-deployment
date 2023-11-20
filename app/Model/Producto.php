@@ -3,22 +3,24 @@
 
 class Producto
 {
-    public static function AltaProducto($nombre, $cantidad)
+    public static function AltaProducto($nombre, $cantidad, $precio, $tiempo)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "INSERT INTO producto (nombre,cantidad) 
-            VALUES (:nombre,:cantidad)"
+            "INSERT INTO Producto (Nombre,Cantidad,Precio,Tiempo) 
+            VALUES (:nombre,:cantidad,:precio,:tiempo)"
         );
         $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
         $consulta->bindValue(':cantidad', $cantidad, PDO::PARAM_INT);
+        $consulta->bindValue(':precio', $precio, PDO::PARAM_INT);
+        $consulta->bindValue(':tiempo', $tiempo, PDO::PARAM_STR);
         $consulta->execute();
     }
 
     public static function ListarProductos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM producto");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM Producto");
         $consulta->execute();
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Producto');
     }
@@ -27,7 +29,7 @@ class Producto
     {
         $productos = self::ListarProductos();
         foreach ($productos as $e)
-            if ($e->id == $idProducto)
+            if ($e->ID == $idProducto)
                 return $e;
         return null;
     }
@@ -36,7 +38,7 @@ class Producto
     {
         $productos = self::ListarProductos();
         foreach ($productos as $e)
-            if ($e->nombre === $nombre)
+            if ($e->Nombre === $nombre)
                 return $e;
         return null;
     }
@@ -53,8 +55,8 @@ class Producto
             $hayStock = false;
 
             foreach ($listado as $f)
-                if ($f->id == $idProducto)
-                    if ($f->cantidad >= $cantidad)
+                if ($f->ID == $idProducto)
+                    if ($f->Cantidad >= $cantidad)
                     {
                         $hayStock = true;
                         break;
@@ -77,7 +79,7 @@ class Producto
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "UPDATE producto SET cantidad = cantidad + :cantidad WHERE nombre = :nombre"
+            "UPDATE Producto SET Cantidad = Cantidad + :cantidad WHERE Nombre = :nombre"
         );
         $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
         $consulta->bindValue(':cantidad', $cantidad, PDO::PARAM_STR);

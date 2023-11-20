@@ -11,16 +11,18 @@ class CProducto
     {
         #VALIDAR CAMPOS
         $parametros = $request->getParsedBody();
-        $nombre = $parametros['nombre'];
-        $cantidad = $parametros['cantidad'];
+        $nombre = $parametros['Nombre'];
+        $cantidad = $parametros['Cantidad'];
+        $precio = $parametros['Precio'];
+        $tiempo = $parametros['Tiempo'];
 
         $p = Producto::BuscarProductoNombre($nombre);
         if ($p === NULL)
         {
             try
             {
-                Producto::AltaProducto($nombre, $cantidad);
-                $payload = json_encode("Producto agregado al stock.");
+                Producto::AltaProducto($nombre, $cantidad, $precio, $tiempo);
+                $payload = json_encode("{$nombre} agregado al stock.");
                 $response->getBody()->write($payload);
                 return $response->withHeader('Content-Type', 'application/json');
             }
@@ -51,7 +53,7 @@ class CProducto
     public static function BuscarProductoID(Request $request, Response $response, $args)
     {
         $parametros = $request->getQueryParams();
-        $idProducto = $parametros['id'];
+        $idProducto = $parametros['ID'];
         $payload = json_encode(Producto::BuscarProductoID($idProducto));
         $response->getBody()->write($payload);
         return $response->withHeader('Content-Type', 'application/json');
@@ -60,7 +62,7 @@ class CProducto
     public static function BuscarProductoNombre(Request $request, Response $response, $args)
     {
         $parametros = $request->getQueryParams();
-        $nombre = $parametros['nombre'];
+        $nombre = $parametros['Nombre'];
         $payload = json_encode(Producto::BuscarProductoNombre($nombre));
         $response->getBody()->write($payload);
         return $response->withHeader('Content-Type', 'application/json');

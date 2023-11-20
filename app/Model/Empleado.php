@@ -7,7 +7,7 @@ class Empleado
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "INSERT INTO empleado (nombre,apellido,clave) 
+            "INSERT INTO Empleado (Nombre,Apellido,Clave) 
             VALUES (:nombre,:apellido,:clave)"
         );
         $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
@@ -20,7 +20,7 @@ class Empleado
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "SELECT * FROM empleado"
+            "SELECT * FROM Empleado"
         );
         $consulta->execute();
 
@@ -31,7 +31,7 @@ class Empleado
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "SELECT * FROM empleado WHERE sector = :sector"
+            "SELECT * FROM Empleado WHERE Sector = :sector"
         );
         $consulta->bindValue(':sector', $sector, PDO::PARAM_STR);
         $consulta->execute();
@@ -43,9 +43,9 @@ class Empleado
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "UPDATE empleado 
-                    SET sector = :sector 
-                    WHERE id = :idEmpleado"
+            "UPDATE Empleado 
+                    SET Sector = :sector 
+                    WHERE ID = :idEmpleado"
         );
         $consulta->bindValue(':sector', $sector, PDO::PARAM_STR);
         $consulta->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
@@ -55,8 +55,8 @@ class Empleado
 
     public static function ValidarDatos($parametros)
     {
-        $nombre = $parametros['nombre'];
-        $apellido = $parametros['apellido'];
+        $nombre = $parametros['Nombre'];
+        $apellido = $parametros['Apellido'];
         if (isset($nombre) && isset($apellido))
         {
             if (is_string($nombre) && is_string($apellido))
@@ -73,7 +73,7 @@ class Empleado
     {
         $empleados = self::ListarEmpleados();
         foreach ($empleados as $e)
-            if ($e->id == $idEMpleado)
+            if ($e->ID == $idEMpleado)
                 return $e;
         return null;
     }
@@ -82,8 +82,18 @@ class Empleado
     {
         $empleados = self::ListarEmpleados();
         foreach ($empleados as $e)
-            if ($e->nombre == $nombre && $e->apellido == $apellido)
+            if ($e->Nombre == $nombre && $e->Apellido == $apellido)
                 return $e;
         return null;
+    }
+
+    public static function SumarMesaMozo($idEmpleado)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consultaUpdate = $objAccesoDatos->prepararConsulta(
+            "UPDATE Empleado SET Mesas_A_Cargo = Mesas_A_Cargo + 1 WHERE ID = :idEmpleado"
+        );
+        $consultaUpdate->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
+        $consultaUpdate->execute();
     }
 }
