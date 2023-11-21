@@ -22,18 +22,21 @@ class Mesa
 
     public static function AbrirMesa($idMesa, $idEmpleado, $idPedido)
     {
+        $cliente = Cliente::$clientes[rand(0, count(Cliente::$clientes) - 1)];
+
         $estado = 'Con cliente esperando pedido';
         $codigo = Utils::GenerarCodigo();
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consultaUpdate = $objAccesoDatos->prepararConsulta(
             "UPDATE Mesa 
-            SET ID_Empleado = :idEmpleado, Estado = :estado, CodigoUnico = :codigoUnico ,ID_Pedido = :idPedido
+            SET ID_Empleado = :idEmpleado, Estado = :estado, CodigoUnico = :codigoUnico ,ID_Pedido = :idPedido, Cliente = :cliente
             WHERE ID = :id"
         );
         $consultaUpdate->bindValue(':id', $idMesa, PDO::PARAM_INT);
         $consultaUpdate->bindValue(':idPedido', $idPedido, PDO::PARAM_INT);
         $consultaUpdate->bindValue(':estado', $estado, PDO::PARAM_STR);
         $consultaUpdate->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
+        $consultaUpdate->bindValue(':cliente', $cliente, PDO::PARAM_STR);
         $consultaUpdate->bindValue(':codigoUnico', $codigo, PDO::PARAM_STR);
         $consultaUpdate->execute();
     }
@@ -95,15 +98,16 @@ class Mesa
         return false;
     }
 
-    public static function TraerIDCliente($idMesa)
+    public static function TraerCliente($idMesa)
     {
-        $mesas = self::ListarMesas();
-        foreach ($mesas as $e)
-        {
-            if ($e->ID == $idMesa)
-                return $e->ID_Cliente;
-        }
-        return NULL;
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta(
+            "SELECT Cliente FROM Mesa WHERE ID = :id;"
+        );
+        $consulta->bindValue(':id', $idMesa, PDO::PARAM_INT);
+        $consulta->execute();
+
+        return $consulta->fetchAll(PDO::FETCH_CLASS, 'Mesa');
     }
 
     public static function TraerIDPedido($idMesa)

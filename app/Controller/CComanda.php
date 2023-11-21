@@ -20,14 +20,11 @@ class CComanda
             {
                 $pedido = Pedido::TraerPedido($idPedido);
                 $productos = $pedido->Productos;
-                $cliente = 'NADIE';
-                $estado = "En preparacion";
+                $cliente = Mesa::TraerCliente($idMesa);
                 $idEmpleado = Mesa::TraerIDEmpleado($idMesa);
-                //$cliente = $pedido->Nombre;
                 if (!Comanda::ExistePedidoEnComanda($idPedido))
                 {
-                    Comanda::AltaComanda($idMesa, $cliente, $idEmpleado, $idPedido, $productos);
-                    Pedido::CambiarEstadoPedido($idPedido, $estado);
+                    Comanda::AltaComanda($idMesa, $cliente[0]->Cliente, $idEmpleado, $idPedido, $productos);
                     $payload = json_encode("Comanda creada correctamente");
                     $response->getBody()->write($payload);
                     return $response->withHeader('Content-Type', 'application/json');

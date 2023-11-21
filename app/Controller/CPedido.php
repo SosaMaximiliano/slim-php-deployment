@@ -10,7 +10,7 @@ class CPedido
     private static $estados = array(
         "Pedido",
         "En preparacion",
-        "Listo",
+        "Listo para servir",
         "Entregado"
     );
 
@@ -58,7 +58,7 @@ class CPedido
 
     public static function ListarPedidos(Request $request, Response $response, $args)
     {
-        $payload = json_encode(Pedido::ListarPedidos());
+        $payload = json_encode(Pedido::ListarPedidosObj());
         $response->getBody()->write($payload);
         return $response->withHeader('Content-Type', 'application/json');
     }
@@ -81,6 +81,15 @@ class CPedido
         return $response->withHeader('Content-Type', 'application/json');
     }
 
+    public static function TraerPedidoPorID(Request $request, Response $response, $args)
+    {
+        $parametros = $request->getQueryParams();
+        $idPedido = $parametros['ID'];
+        $payload = json_encode(Pedido::TraerPedido($idPedido));
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
+    }
+
     public static function CambiarEstadoPedido(Request $request, Response $response, $args)
     {
         $parametros = $request->getParsedBody();
@@ -94,6 +103,38 @@ class CPedido
                 try
                 {
                     Pedido::CambiarEstadoPedido($idPedido, $estado);
+                    $payload = json_encode("Estado del pedido cambiado a {$estado}");
+                    $response->getBody()->write($payload);
+                    return $response->withHeader('Content-Type', 'application/json');
+                }
+                catch (Exception $e)
+                {
+                    $payload = json_encode("Error al cambiar de estado. {$e->getMessage()}");
+                    $response->getBody()->write($payload);
+                    return $response->withHeader('Content-Type', 'application/json');
+                }
+            }
+            else
+                throw new Exception("Estado incorrecto", 200);
+        }
+        else
+            throw new Exception("Pedido inexistente", 200);
+    }
+
+    public static function CambiarEstadoPedidoPorSector(Request $request, Response $response, $args)
+    {
+        $parametros = $request->getParsedBody();
+        $idPedido = $parametros['ID_Pedido'];
+        $estado = $parametros['Estado'];
+        $sector = $parametros['Sector'];
+
+        if (Pedido::ExistePedido($idPedido))
+        {
+            if (in_array($estado, self::$estados))
+            {
+                try
+                {
+                    Pedido::CambiarEstadoPedidoPorSector($idPedido, $estado, $sector);
                     $payload = json_encode("Estado del pedido cambiado a {$estado}");
                     $response->getBody()->write($payload);
                     return $response->withHeader('Content-Type', 'application/json');

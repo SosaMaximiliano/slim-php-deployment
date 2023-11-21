@@ -7,11 +7,12 @@ class Comanda
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "INSERT INTO Comanda (Fecha,Hora,ID_Mesa,ID_Empleado,ID_Pedido,Pedidos,NombreCliente) 
-        VALUES (:fecha, :hora, :idMesa, :idEmpleado, :idPedido, :pedidos,:nombreCliente)"
+            "INSERT INTO Comanda (Fecha,Hora,ID_Mesa,ID_Empleado,ID_Pedido,Pedidos,NombreCliente,Estado) 
+        VALUES (:fecha, :hora, :idMesa, :idEmpleado, :idPedido, :pedidos,:nombreCliente,:estado)"
         );
         $fecha = date('Y-m-d');
         $hora = date('H:i:sa');
+        $estado = "En preparacion";
         $consulta->bindValue(':fecha', $fecha, PDO::PARAM_STR);
         $consulta->bindValue(':hora', $hora, PDO::PARAM_STR);
         $consulta->bindValue(':idMesa', $idMesa, PDO::PARAM_INT);
@@ -19,6 +20,7 @@ class Comanda
         $consulta->bindValue(':idPedido', $idPedido, PDO::PARAM_INT);
         $consulta->bindValue(':pedidos', $pedidos, PDO::PARAM_STR);
         $consulta->bindValue(':nombreCliente', $cliente, PDO::PARAM_STR);
+        $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
         //$consulta->bindValue(':URLimagen', $URLimagen, PDO::PARAM_STR);
         $consulta->execute();
 

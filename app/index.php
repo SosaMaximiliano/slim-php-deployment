@@ -24,6 +24,7 @@ require __DIR__ . '/./Middleware/CheckTokenMiddleware.php';
 require __DIR__ . '/./Middleware/CheckMozoMiddleware.php';
 require __DIR__ . '/./Middleware/CheckSocioMiddleware.php';
 require __DIR__ . '/./Middleware/CheckCocineroMiddleware.php';
+require __DIR__ . '/./Middleware/EmpleadoActivoMiddleware.php';
 
 
 // Instantiate App
@@ -40,26 +41,32 @@ $app->addBodyParsingMiddleware();
 
 // Routes
 
-$app->post('/login', \CAuthJWT::class . ':CrearTokenLogin');
+$app->post('/login', \CAuthJWT::class . ':CrearTokenLogin')->add(new EmpleadoActivoMiddleware());
 
 $app->group('/empleado', function (RouteCollectorProxy $group)
 {
+    #PRODUCTOS
     $group->post('/producto_alta', \CProducto::class . ':AgregarProducto');
     $group->get('/producto_listar', \CProducto::class . ':ListarProductos');
     $group->get('/producto_buscarporid', \CProducto::class . ':BuscarProductoID');
     $group->get('/producto_buscarpornombre', \CProducto::class . ':BuscarProductoNombre');
 
+    #PEDIDOS
     $group->post('/pedido_alta', \CPedido::class . ':AltaPedido')->add(new CheckMozoMiddleware());
+    $group->get('/pedido_traerpedido', \CPedido::class . ':TraerPedidoPorID');
     $group->get('/pedido_listar', \CPedido::class . ':ListarPedidos')->add(new CheckMozoMiddleware());
     $group->get('/pedido_listarporsector', \CPedido::class . ':ListarPedidosPorSector');
     $group->get('/pedido_listarporcliente', \CPedido::class . ':ListarPedidosPorCliente')->add(new CheckMozoMiddleware());
     $group->put('/pedido_cambiarestado', \CPedido::class . ':CambiarEstadoPedido')->add(new CheckMozoMiddleware());
+    $group->put('/pedido_cambiarestadoporsector', \CPedido::class . ':CambiarEstadoPedidoPorSector');
 
+    #MESAS
     $group->post('/mesa_abrir', \CMesa::class . ':AbrirMesa')->add(new CheckMozoMiddleware());
     $group->get('/mesa_listar', \CMesa::class . ':ListarMesas')->add(new CheckMozoMiddleware());
     $group->put('/mesa_cambiarestado', \CMesa::class . ':CambiarEstadoMesa')->add(new CheckMozoMiddleware());
     //$group->get('/mesa_listarporcliente', \CMesa::class . ':ListarPedidosPorCliente');
 
+    #COMANDA
     $group->post('/comanda_alta', \CComanda::class . ':AltaComanda')->add(new CheckMozoMiddleware());
     $group->post('/comanda_cambiarestado', \CComanda::class . ':CambiarEstado')->add(new CheckCocineroMiddleware());
 
@@ -76,7 +83,6 @@ $app->group('/admin', function (RouteCollectorProxy $group)
     $group->get('/empleado_listarporsector', \CEmpleado::class . ':ListarEmpleadosPorSector');
     $group->put('/empleado_asignarsector', \CEmpleado::class . ':AsignarSector');
     $group->post('/mesa_alta', \CMesa::class . ':AltaMesa');
-    $group->put('/mesa_cerrar', \CMesa::class . ':CerrarEstadoMesa');
 })
     ->add(new CheckSocioMiddleware())
     ->add(new CheckTokenMiddleware());
