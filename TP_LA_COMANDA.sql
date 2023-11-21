@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 21-11-2023 a las 03:37:23
+-- Tiempo de generación: 21-11-2023 a las 21:46:37
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.1.17
 
@@ -40,13 +40,6 @@ CREATE TABLE `Comanda` (
   `Estado` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `Comanda`
---
-
-INSERT INTO `Comanda` (`ID`, `Fecha`, `Hora`, `ID_Mesa`, `ID_Empleado`, `ID_Pedido`, `Pedidos`, `NombreCliente`, `FotoMesa`, `Estado`) VALUES
-(4, '2023-11-20', '18:32:53pm', 10, 2, 14, '[{\"Milanesa a caballo\":1},{\"Hamburguesa de garbanzo\":2},{\"Daikiri\":1},{\"Cerveza Corona\":1}]', 'NADIE', NULL, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -60,7 +53,7 @@ CREATE TABLE `Empleado` (
   `Sector` varchar(50) DEFAULT NULL,
   `Clave` varchar(8) NOT NULL,
   `Estado` varchar(50) NOT NULL DEFAULT 'Activo',
-  `Mesas_A_Cargo` int(11) NOT NULL DEFAULT 0,
+  `Operaciones` int(11) NOT NULL DEFAULT 0,
   `FechaAlta` varchar(10) NOT NULL,
   `FechaBaja` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -69,14 +62,16 @@ CREATE TABLE `Empleado` (
 -- Volcado de datos para la tabla `Empleado`
 --
 
-INSERT INTO `Empleado` (`ID`, `Nombre`, `Apellido`, `Sector`, `Clave`, `Estado`, `Mesas_A_Cargo`, `FechaAlta`, `FechaBaja`) VALUES
-(1, 'Bruce', 'Wayne', 'Mozo', '515', 'Inactivo', 7, '', '2023-11-21'),
-(2, 'Clint', 'Eastwood', 'Mozo', '1234', 'Activo', 8, '', NULL),
-(3, 'Max', 'Payne', 'Cocinero', '515', 'Activo', 0, '', NULL),
+INSERT INTO `Empleado` (`ID`, `Nombre`, `Apellido`, `Sector`, `Clave`, `Estado`, `Operaciones`, `FechaAlta`, `FechaBaja`) VALUES
 (4, 'Moe', 'Howard', 'Socio', 'pass1234', 'Activo', 0, '', NULL),
 (5, 'Curly', 'Howard', 'Socio', 'pass1234', 'Activo', 0, '', NULL),
 (6, 'Larry', 'Fine', 'Socio', 'pass1234', 'Activo', 0, '', NULL),
-(7, 'Steve', 'Vai', NULL, '515', 'Inactivo', 0, '2023-11-21', '2023-11-21');
+(8, 'Bruce', 'Wayne', 'Cocinero', '515', 'Activo', 1, '2023-11-21', NULL),
+(9, 'Clint', 'Eastwood', 'Mozo', '515', 'Activo', 2, '2023-11-21', NULL),
+(11, 'Chuck', 'Norris', 'Mozo', '515', 'Activo', 0, '2023-11-21', NULL),
+(12, 'Steve', 'Vai', 'Mozo', '515', 'Activo', 0, '2023-11-21', NULL),
+(13, 'Bugs', 'Bunny', 'Bartender', '515', 'Activo', 0, '2023-11-21', NULL),
+(14, 'Emmet', 'Brown', 'Cocinero', '515', 'Activo', 1, '2023-11-21', NULL);
 
 -- --------------------------------------------------------
 
@@ -100,8 +95,7 @@ CREATE TABLE `Encuesta` (
 --
 
 INSERT INTO `Encuesta` (`ID`, `ID_Comanda`, `PuntuacionMesa`, `PuntuacionMozo`, `PuntuacionCocinero`, `PuntuacionRestaurante`, `Fecha`, `Comentarios`) VALUES
-(1, 4, 7, 9, 10, 8, '2023-11-20', 'Re caro'),
-(2, 4, 7, 9, 10, 8, '2023-11-20', 'Re caro');
+(3, 10, 7, 9, 10, 8, '2023-11-21', 'Re caro');
 
 -- --------------------------------------------------------
 
@@ -111,21 +105,12 @@ INSERT INTO `Encuesta` (`ID`, `ID_Comanda`, `PuntuacionMesa`, `PuntuacionMozo`, 
 
 CREATE TABLE `Mesa` (
   `ID` int(11) NOT NULL,
-  `ID_Pedido` int(11) NOT NULL,
+  `ID_Pedido` int(11) DEFAULT NULL,
   `Estado` varchar(50) NOT NULL,
   `ID_Empleado` int(11) DEFAULT NULL,
+  `Cliente` varchar(50) DEFAULT NULL,
   `CodigoUnico` varchar(5) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `Mesa`
---
-
-INSERT INTO `Mesa` (`ID`, `ID_Pedido`, `Estado`, `ID_Empleado`, `CodigoUnico`) VALUES
-(7, 0, 'Con cliente esperando pedido', NULL, NULL),
-(8, 0, 'Libre', NULL, NULL),
-(9, 0, 'Libre', NULL, NULL),
-(10, 14, 'Con cliente esperando pedido', 2, 'JDMY0');
 
 -- --------------------------------------------------------
 
@@ -142,18 +127,6 @@ CREATE TABLE `Pedido` (
   `TiempoEstimado` varchar(5) NOT NULL,
   `ValorTotal` float(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `Pedido`
---
-
-INSERT INTO `Pedido` (`ID`, `Productos`, `ID_Mesa`, `CodigoUnico`, `Estado`, `TiempoEstimado`, `ValorTotal`) VALUES
-(16, '[{\"Producto\":\"Pizza Margarita\",\"Cantidad\":null,\"Sector\":\"Cocinero\",\"Estado\":\"Pedido\"}]', 7, 'I527Q', 'Pedido', '00:25', 1200.00),
-(17, '[{\"Producto\":\"Pizza Margarita\",\"Cantidad\":\"3\",\"Sector\":\"Cocinero\",\"Estado\":\"Pedido\"}]', 7, 'DPKCS', 'Pedido', '00:25', 1200.00),
-(18, '[{\"Producto\":\"Pizza Margarita\",\"Cantidad\":\"3\",\"Sector\":\"Cocinero\",\"Estado\":\"Pedido\"},{\"Producto\":\"Hamburguesa de garbanzo\",\"Cantidad\":\"3\",\"Sector\":\"Cocinero\",\"Estado\":\"Pedido\"}]', 7, 'PYI87', 'En preparacion', '00:25', 2000.00),
-(19, '[{\"Producto\":\"Refresco de Cola\",\"Cantidad\":\"3\",\"Sector\":\"Bartender\",\"Estado\":\"Pedido\"},{\"Producto\":\"Cerveza Corona\",\"Cantidad\":\"5\",\"Sector\":\"Cervecero\",\"Estado\":\"Pedido\"},{\"Producto\":\"Cerveza Artesanal\",\"Cantidad\":\"3\",\"Sector\":\"Cervecero\",\"Estado\":\"Pedido\"},{\"Producto\":\"Milanesa a caballo\",\"Cantidad\":\"2\",\"Sector\":\"Cocinero\",\"Estado\":\"Pedido\"},{\"Producto\":\"Hamburguesa de garbanzo\",\"Cantidad\":\"3\",\"Sector\":\"Cocinero\",\"Estado\":\"Pedido\"}]', 8, 'PK77R', 'En preparacion', '00:40', 3250.00),
-(20, '[{\"Producto\":\"Refresco de Cola\",\"Cantidad\":\"3\",\"Sector\":\"Bartender\",\"Tiempo\":\"00:00\",\"Estado\":\"Pedido\"},{\"Producto\":\"Cerveza Corona\",\"Cantidad\":\"5\",\"Sector\":\"Cervecero\",\"Tiempo\":\"00:00\",\"Estado\":\"Pedido\"},{\"Producto\":\"Cerveza Artesanal\",\"Cantidad\":\"3\",\"Sector\":\"Cervecero\",\"Tiempo\":\"00:00\",\"Estado\":\"Pedido\"},{\"Producto\":\"Milanesa a caballo\",\"Cantidad\":\"2\",\"Sector\":\"Cocinero\",\"Tiempo\":\"00:00\",\"Estado\":\"Pedido\"},{\"Producto\":\"Hamburguesa de garbanzo\",\"Cantidad\":\"3\",\"Sector\":\"Cocinero\",\"Tiempo\":\"00:00\",\"Estado\":\"Pedido\"}]', 8, 'FUPNF', 'Pedido', '00:00', 3250.00),
-(21, '[{\"Producto\":\"Refresco de Cola\",\"Cantidad\":\"3\",\"Sector\":\"Bartender\",\"Tiempo\":\"00:00\",\"Estado\":\"Pedido\"},{\"Producto\":\"Cerveza Corona\",\"Cantidad\":\"5\",\"Sector\":\"Cervecero\",\"Tiempo\":\"00:00\",\"Estado\":\"Pedido\"},{\"Producto\":\"Cerveza Artesanal\",\"Cantidad\":\"3\",\"Sector\":\"Cervecero\",\"Tiempo\":\"00:00\",\"Estado\":\"Pedido\"},{\"Producto\":\"Milanesa a caballo\",\"Cantidad\":\"2\",\"Sector\":\"Cocinero\",\"Tiempo\":\"00:00\",\"Estado\":\"Pedido\"},{\"Producto\":\"Hamburguesa de garbanzo\",\"Cantidad\":\"3\",\"Sector\":\"Cocinero\",\"Tiempo\":\"00:40\",\"Estado\":\"Pedido\"}]', 8, 'T1IUG', 'Pedido', '00:40', 3250.00);
 
 -- --------------------------------------------------------
 
@@ -180,14 +153,14 @@ INSERT INTO `Producto` (`ID`, `Nombre`, `Cantidad`, `Precio`, `Tiempo`, `Sector`
 (12, 'Ensalada César', 802, 800.00, '00:10', 'Cocinero'),
 (13, 'Pasta Alfredo', 180, 1000.00, '00:20', 'Cocinero'),
 (14, 'Sushi Variado', 120, 1500.00, '00:30', 'Cocinero'),
-(15, 'Refresco de Cola', 1981, 150.00, '00:00', 'Bartender'),
-(16, 'Cerveza Artesanal', 3009, 300.00, '00:00', 'Cervecero'),
+(15, 'Refresco de Cola', 1912, 150.00, '00:00', 'Bartender'),
+(16, 'Cerveza Artesanal', 2940, 300.00, '00:00', 'Cervecero'),
 (17, 'Agua Mineral', 600, 50.00, '00:00', 'Bartender'),
 (18, 'Polenta con salsa', 624, 350.00, '00:30', 'Cocinero'),
-(19, 'Milanesa a caballo', 295, 1300.00, '00:40', 'Cocinero'),
-(20, 'Hamburguesa de garbanzo', 591, 800.00, '00:10', 'Cocinero'),
+(19, 'Milanesa a caballo', 249, 1300.00, '00:40', 'Cocinero'),
+(20, 'Hamburguesa de garbanzo', 522, 800.00, '00:10', 'Cocinero'),
 (21, 'Daikiri', 303, 600.00, '00:05', 'Bartender'),
-(22, 'Cerveza Corona', 1501, 700.00, '00:00', 'Cervecero');
+(22, 'Cerveza Corona', 1386, 700.00, '00:00', 'Cervecero');
 
 --
 -- Índices para tablas volcadas
@@ -237,31 +210,31 @@ ALTER TABLE `Producto`
 -- AUTO_INCREMENT de la tabla `Comanda`
 --
 ALTER TABLE `Comanda`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `Empleado`
 --
 ALTER TABLE `Empleado`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `Encuesta`
 --
 ALTER TABLE `Encuesta`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `Mesa`
 --
 ALTER TABLE `Mesa`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `Pedido`
 --
 ALTER TABLE `Pedido`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `Producto`
