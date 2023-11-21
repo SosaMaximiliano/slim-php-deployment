@@ -17,19 +17,21 @@ class Mesa
         );
         $consultaInsert->bindValue(':estado', $estado, PDO::PARAM_STR);
         $consultaInsert->execute();
+        return $objAccesoDatos->obtenerUltimoId();
     }
 
-    public static function AbrirMesa($idMesa, $idEmpleado)
+    public static function AbrirMesa($idMesa, $idEmpleado, $idPedido)
     {
         $estado = 'Con cliente esperando pedido';
         $codigo = Utils::GenerarCodigo();
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consultaUpdate = $objAccesoDatos->prepararConsulta(
             "UPDATE Mesa 
-            SET ID_Empleado = :idEmpleado, Estado = :estado, CodigoUnico = :codigoUnico 
+            SET ID_Empleado = :idEmpleado, Estado = :estado, CodigoUnico = :codigoUnico ,ID_Pedido = :idPedido
             WHERE ID = :id"
         );
         $consultaUpdate->bindValue(':id', $idMesa, PDO::PARAM_INT);
+        $consultaUpdate->bindValue(':idPedido', $idPedido, PDO::PARAM_INT);
         $consultaUpdate->bindValue(':estado', $estado, PDO::PARAM_STR);
         $consultaUpdate->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
         $consultaUpdate->bindValue(':codigoUnico', $codigo, PDO::PARAM_STR);
@@ -60,12 +62,27 @@ class Mesa
                 $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
                 $consulta->bindValue(':idMesa', $idMesa, PDO::PARAM_INT);
                 $consulta->execute();
-                echo "Estado de la mesa actualizado a {$estado}";
                 return;
             }
     }
 
-
+    public static function CerrarMesa($idMesa)
+    {
+        $mesas = self::ListarMesas();
+        $estado = "Cerrada";
+        foreach ($mesas as $e)
+            if ($e->ID == $idMesa)
+            {
+                $objAccesoDatos = AccesoDatos::obtenerInstancia();
+                $consulta = $objAccesoDatos->prepararConsulta(
+                    "UPDATE Mesa SET Estado = :estado WHERE ID = :idMesa"
+                );
+                $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
+                $consulta->bindValue(':idMesa', $idMesa, PDO::PARAM_INT);
+                $consulta->execute();
+                return;
+            }
+    }
 
     public static function ExisteReserva($idCliente)
     {
@@ -78,7 +95,7 @@ class Mesa
         return false;
     }
 
-    public static function TraerIDCliente($idMesa): int
+    public static function TraerIDCliente($idMesa)
     {
         $mesas = self::ListarMesas();
         foreach ($mesas as $e)
@@ -89,7 +106,7 @@ class Mesa
         return NULL;
     }
 
-    public static function TraerIDPedido($idMesa): int
+    public static function TraerIDPedido($idMesa)
     {
         $mesas = self::ListarMesas();
         foreach ($mesas as $e)
@@ -100,7 +117,7 @@ class Mesa
         return NULL;
     }
 
-    public static function TraerIDEmpleado($idMesa): int
+    public static function TraerIDEmpleado($idMesa)
     {
         $mesas = self::ListarMesas();
         foreach ($mesas as $e)
@@ -109,5 +126,28 @@ class Mesa
                 return $e->ID_Empleado;
         }
         return NULL;
+    }
+
+    public static function ExisteMesa($idMesa)
+    {
+        $mesas = self::ListarMesas();
+        foreach ($mesas as $e)
+        {
+            if ($e->ID == $idMesa)
+                return true;
+        }
+        return false;
+    }
+
+    public static function MesaLibre($idMesa)
+    {
+        $mesas = self::ListarMesas();
+        foreach ($mesas as $e)
+        {
+            if ($e->ID == $idMesa)
+                if ($e->Estado == "Libre")
+                    return true;
+        }
+        return false;
     }
 }

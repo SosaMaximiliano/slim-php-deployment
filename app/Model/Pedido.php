@@ -13,11 +13,19 @@ class Pedido
         $valorTotal = 0;
         foreach ($productos as $e)
         {
-            $idProducto = $e['id'];
+            $idProducto = $e['Producto'];
             $producto = Producto::BuscarProductoID($idProducto);
             $productoNombre = $producto->Nombre;
-            $cantidad = $e['cantidad'];
-            $pedido[] = [$productoNombre => $cantidad];
+            $sector = $producto->Sector;
+            $estado = 'Pedido';
+            $cantidad = $e['Cantidad'];
+            $pedido[] = [
+                'Producto' => $productoNombre,
+                'Cantidad' => $cantidad,
+                'Sector'   => $sector,
+                'Tiempo'   => $tiempoEstimado,
+                'Estado'   => $estado
+            ];
             self::ActualizoStock($idProducto, $cantidad);
 
             $tiempoEstimado = self::CalcularTiempoEstimado($tiempoEstimado, $producto->Tiempo);
@@ -40,7 +48,32 @@ class Pedido
         return $codigo;
     }
 
-    public static function ListarPedidos()
+    public static function ListarPedidosPorSector($sector)
+    {
+        $psector = [];
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta(
+            "SELECT Productos FROM Pedido;"
+        );
+        $consulta->execute();
+
+        $pedidos = $consulta->fetchAll(PDO::FETCH_CLASS, 'Pedido');
+
+        foreach ($pedidos as $pedido)
+        {
+            $productos = json_decode($pedido->Productos);
+            foreach ($productos as $producto)
+            {
+                if ($producto->Sector == $sector)
+                    $psector[] = $producto;
+            }
+        }
+
+        return $psector;
+    }
+
+
+    public static function ListarPedidosObj()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
@@ -49,6 +82,28 @@ class Pedido
         $consulta->execute();
 
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Pedido');
+    }
+
+    public static function ListarPedidos()
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta(
+            "SELECT * FROM Pedido"
+        );
+        $consulta->execute();
+
+        $pedidos = $consulta->fetchAll(PDO::FETCH_CLASS, 'Pedido');
+
+        foreach ($pedidos as $pedido)
+        {
+            $productos = json_decode($pedido->Productos);
+            foreach ($productos as $producto)
+            {
+                $psector[] = $producto;
+            }
+        }
+
+        return $psector;
     }
 
     public static function ListarPedidosPorEstado($estado)
@@ -83,6 +138,28 @@ class Pedido
         }
     }
 
+    public static function TraerPedidoPorClave($clave)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta(
+            "SELECT * FROM Pedido WHERE CodigoUnico = :clave"
+        );
+        $consulta->bindValue(':clave', $clave, PDO::PARAM_STR);
+        $consulta->execute();
+
+        return $consulta->fetchAll(PDO::FETCH_CLASS, 'Pedido');
+    }
+
+    public static function TraerIdMesaPorPedido($idPedido)
+    {
+        $pedidos = self::ListarPedidos();
+        foreach ($pedidos as $e)
+        {
+            if ($e->ID == $idPedido)
+                return $e->ID_Mesa;
+        }
+    }
+
     public static function CambiarEstadoPedido($idPedido, $estado)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
@@ -93,6 +170,32 @@ class Pedido
         $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
         $consulta->execute();
     }
+
+    // public static function CambiarEstadoPedidoPorSector($idPedido, $estado, $sector)
+    // {
+    //     $objAccesoDatos = AccesoDatos::obtenerInstancia();
+
+    //     #LISTAR PEDIDOS POR SECTOR
+    //     $psector = self::ListarPedidosPorSector($sector);
+
+    //     #MODIFICAR
+    //     foreach ($psector as $e)
+    //     {
+    //         $e['Estado'] = "En preparacion";
+    //     }
+
+    //     #GENERAR VALORES NUEVOS
+
+    //     #UPDATE DE DATOS
+    //     $consulta = $objAccesoDatos->prepararConsulta(
+    //         "UPDATE Pedido SET Estado = :estado WHERE ID = :id"
+    //     );
+    //     $consulta->bindValue(':id', $idPedido, PDO::PARAM_STR);
+    //     $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
+    //     $consulta->execute();
+
+    //     #ACTUALIZAR TABLA
+    // }
 
     public static function ExistePedido($idPedido)
     {

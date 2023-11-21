@@ -1,6 +1,5 @@
 <?php
 
-use Dotenv\Loader\Resolver;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
@@ -15,7 +14,7 @@ class CheckTokenMiddleware
         try
         {
             json_encode(array('datos' => AuthJWT::VerificarToken($token)));
-            echo "Usuario validado";
+            echo "Token validado<br>";
             $response = $handler->handle($request);
         }
         catch (Exception $e)

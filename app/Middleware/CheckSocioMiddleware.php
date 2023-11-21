@@ -1,6 +1,5 @@
 <?php
 
-use Dotenv\Loader\Resolver;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
@@ -18,7 +17,6 @@ class CheckSocioMiddleware
 
             if ($data->Sector == "Socio")
             {
-                echo "El usuario es socio";
                 $response = $handler->handle($request);
             }
             else

@@ -96,4 +96,18 @@ class Empleado
         $consultaUpdate->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
         $consultaUpdate->execute();
     }
+
+    public static function BajaEmpleado($idEmpleado)
+    {
+        $estado = "Inactivo";
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta(
+            "UPDATE Empleado 
+                    SET Estado = :estado 
+                    WHERE ID = :idEmpleado"
+        );
+        $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
+        $consulta->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
+        $consulta->execute();
+    }
 }

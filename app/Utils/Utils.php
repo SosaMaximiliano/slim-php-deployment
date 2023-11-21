@@ -19,7 +19,7 @@ class Utils
         #SI EL MOZO ESTA ATENDIENDO MENOS DE CINCO MESAS
         $disponibles = array_filter($empleados, function ($mozo)
         {
-            return $mozo->Mesas_A_Cargo < 5;
+            return $mozo->Mesas_A_Cargo < 8;
         });
 
         if (count($disponibles) > 0)

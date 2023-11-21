@@ -80,4 +80,33 @@ class CEmpleado
         else
             throw new Exception("ID de empleado inexistente.", 300);
     }
+
+    public static function BajaEmpleado(Request $request, Response $response, $args)
+    {
+        $parametros = $request->getQueryParams();
+        $idEmpleado = $parametros['ID'];
+        try
+        {
+            Empleado::BajaEmpleado($idEmpleado);
+            $payload = json_encode("Empleado dado de baja.");
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
+        }
+        catch (Exception $e)
+        {
+            $payload = json_encode("Error al dar de baja empleado. {$e->getMessage()}");
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
+        }
+    }
+
+    public static function SubirFoto(Request $request, Response $response, $args)
+    {
+        $parametros = $request->getParsedBody();
+        $idPedido = $parametros['ID'];
+        var_dump($request);
+        $extension = explode(".", $_FILES["imagen"]["full_path"]);
+        $destino = "ImagenesDePedidos/" . $idPedido . "." . $extension[1];
+        move_uploaded_file($_FILES['imagen']['tmp_name'], $destino);
+    }
 }

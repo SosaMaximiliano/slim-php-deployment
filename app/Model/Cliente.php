@@ -6,7 +6,7 @@ class Cliente
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consultaInsert = $objAccesoDatos->prepararConsulta(
-            "INSERT INTO cliente (nombre) 
+            "INSERT INTO Cliente (Nombre) 
                         VALUES (:nombre)"
         );
         $consultaInsert->bindValue(':nombre', $nombre, PDO::PARAM_STR);
@@ -19,7 +19,7 @@ class Cliente
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "SELECT * FROM cliente"
+            "SELECT * FROM Cliente"
         );
         $consulta->execute();
 
@@ -31,7 +31,7 @@ class Cliente
         $clientes = self::ListarClientes();
         foreach ($clientes as $e)
         {
-            if ($e->id == $idCliente)
+            if ($e->ID == $idCliente)
                 return $e;
         }
     }
@@ -41,7 +41,7 @@ class Cliente
         $clientes = self::ListarClientes();
         foreach ($clientes as $e)
         {
-            if ($e->id == $idCliente)
+            if ($e->ID == $idCliente)
                 return true;
         }
         return false;

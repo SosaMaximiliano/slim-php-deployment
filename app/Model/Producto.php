@@ -50,8 +50,8 @@ class Producto
 
         foreach ($productos as $e)
         {
-            $idProducto = $e['id'];
-            $cantidad = $e['cantidad'];
+            $idProducto = $e['Producto'];
+            $cantidad = $e['Cantidad'];
             $hayStock = false;
 
             foreach ($listado as $f)

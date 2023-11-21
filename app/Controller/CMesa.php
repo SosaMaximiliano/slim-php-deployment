@@ -18,8 +18,8 @@ class CMesa
     {
         try
         {
-            Mesa::AltaMesa();
-            $payload = json_encode("Una mesa fue dada de alta");
+            $idMesa = Mesa::AltaMesa();
+            $payload = json_encode("La mesa {$idMesa} fue dada de alta");
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json');
         }
@@ -34,20 +34,39 @@ class CMesa
     public static function AbrirMesa(Request $request, Response $response, $args)
     {
         $parametros = $request->getParsedBody();
-        $idMesa = $parametros['ID'];
-        $mozo = Utils::DameUnMozo();
-        $idMozo = $mozo->ID;
-        try
+        $idMesa = $parametros['ID_Mesa'];
+        $idPedido = $parametros['ID_Pedido'];
+        if (Mesa::ExisteMesa($idMesa) && Mesa::MesaLibre($idMesa))
         {
-            Mesa::AbrirMesa($idMesa, $idMozo);
-            Empleado::SumarMesaMozo($idMozo);
-            $payload = json_encode("La mesa {$idMesa} esta siendo atendida por {$mozo->Nombre} {$mozo->Apellido}");
-            $response->getBody()->write($payload);
-            return $response->withHeader('Content-Type', 'application/json');
+            if (Pedido::ExistePedido($idPedido))
+            {
+                $mozo = Utils::DameUnMozo();
+                $idEmpleado = $mozo->ID;
+                try
+                {
+                    Mesa::AbrirMesa($idMesa, $idEmpleado, $idPedido);
+                    Empleado::SumarMesaMozo($idEmpleado);
+                    $payload = json_encode("La mesa {$idMesa} esta siendo atendida por {$mozo->Nombre} {$mozo->Apellido}");
+                    $response->getBody()->write($payload);
+                    return $response->withHeader('Content-Type', 'application/json');
+                }
+                catch (Exception $e)
+                {
+                    $payload = json_encode("Error al abrir la mesa. {$e->getMessage()}");
+                    $response->getBody()->write($payload);
+                    return $response->withHeader('Content-Type', 'application/json');
+                }
+            }
+            else
+            {
+                $payload = json_encode("No existe el pedido indicado.");
+                $response->getBody()->write($payload);
+                return $response->withHeader('Content-Type', 'application/json');
+            }
         }
-        catch (Exception $e)
+        else
         {
-            $payload = json_encode("Error al abrir la mesa. {$e->getMessage()}");
+            $payload = json_encode("La mesa no esta disponible.");
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json');
         }
@@ -63,9 +82,9 @@ class CMesa
     public static function CambiarEstadoMesa(Request $request, Response $response)
     {
         $parametros = $request->getParsedBody();
-        $idMesa = $parametros['idMesa'];
-        $estado = $parametros['estado'];
-        if (in_array(self::$estados, $estado))
+        $idMesa = $parametros['ID_Mesa'];
+        $estado = $parametros['Estado'];
+        if (in_array($estado, self::$estados))
         {
             try
             {

@@ -19,23 +19,40 @@ class CPedido
         $parametros = $request->getParsedBody();
         $productos = $parametros['Productos'];
         $idMesa = $parametros['ID_Mesa'];
-        #REVISO QUE HAYA STOCK DEL PRODUCTO
-        if (Producto::HayStock($productos))
+        if (Mesa::ExisteMesa($idMesa))
         {
-            try
+            if (Mesa::MesaLibre($idMesa))
             {
-                Pedido::AltaPedido($productos, $idMesa);
-                $payload = json_encode("Pedido creado");
+                #REVISO QUE HAYA STOCK DEL PRODUCTO
+                if (Producto::HayStock($productos))
+                {
+                    try
+                    {
+                        Pedido::AltaPedido($productos, $idMesa);
+                        $payload = json_encode("Pedido creado");
+                        $response->getBody()->write($payload);
+                        return $response->withHeader('Content-Type', 'application/json');
+                    }
+                    catch (Exception $e)
+                    {
+                        $payload = json_encode("No se pudo tomar el pedido. {$e->getMessage()}");
+                        $response->getBody()->write($payload);
+                        return $response->withHeader('Content-Type', 'application/json');
+                    }
+                }
+            }
+            else
+            {
+                $payload = json_encode("La mesa {$idMesa} esta ocupada.");
                 $response->getBody()->write($payload);
                 return $response->withHeader('Content-Type', 'application/json');
             }
-            catch (Exception $e)
-            {
-                $payload = json_encode("No se pudo tomar el pedido. {$e->getMessage()}");
-                $response->getBody()->write($payload);
-                return $response->withHeader('Content-Type', 'application/json');
-            }
-            #PASO EL PEDIDO A LA COMANDA Y CAMBIO EL ESTADO A "EN PREPARACION"
+        }
+        else
+        {
+            $payload = json_encode("La mesa {$idMesa} no se encuentra disponible.");
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
         }
     }
 
@@ -46,11 +63,29 @@ class CPedido
         return $response->withHeader('Content-Type', 'application/json');
     }
 
+    public static function ListarPedidosPorSector(Request $request, Response $response, $args)
+    {
+        $parametros = $request->getQueryParams();
+        $sector = $parametros['Sector'];
+        $payload = json_encode(Pedido::ListarPedidosPorSector($sector));
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
+    }
+
+    public static function TraerPedidoPorClave(Request $request, Response $response, $args)
+    {
+        $parametros = $request->getQueryParams();
+        $clave = $parametros['Clave_Unica'];
+        $payload = json_encode(Pedido::TraerPedidoPorClave($clave));
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
+    }
+
     public static function CambiarEstadoPedido(Request $request, Response $response, $args)
     {
         $parametros = $request->getParsedBody();
-        $idPedido = $parametros['idPedido'];
-        $estado = $parametros['estado'];
+        $idPedido = $parametros['ID_Pedido'];
+        $estado = $parametros['Estado'];
 
         if (Pedido::ExistePedido($idPedido))
         {

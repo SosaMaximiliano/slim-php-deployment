@@ -4,7 +4,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
 
-class CheckMozoMiddleware
+class CheckCerveceroMiddleware
 {
     public function __invoke(Request $request, RequestHandler $handler): Response
     {
@@ -14,14 +14,14 @@ class CheckMozoMiddleware
         try
         {
             $data = AuthJWT::ObtenerData($token);
-            if ($data->Sector == "Mozo" || $data->Sector == "Socio")
+            if ($data->Sector == "Cervecero" || $data->Sector == "Socio")
             {
                 echo "Usuario autorizado<br>";
                 $response = $handler->handle($request);
             }
             else
             {
-                $response->getBody()->write(json_encode("Esta tarea solo puede realizarla un mozo"));
+                $response->getBody()->write(json_encode("Esta tarea solo puede realizarla un cervecero"));
             }
         }
         catch (Exception $e)
