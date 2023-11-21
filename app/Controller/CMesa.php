@@ -40,12 +40,23 @@ class CMesa
         {
             if (Pedido::ExistePedido($idPedido))
             {
+                #SI EL PEDIDO NO ESTA EN OTRA MESA
+                $mesas = Mesa::ListarMesas();
+                foreach ($mesas as $e)
+                {
+                    if ($e->ID_Pedido == $idPedido)
+                    {
+                        $payload = json_encode("El pedido corresponde otra mesa.");
+                        $response->getBody()->write($payload);
+                        return $response->withHeader('Content-Type', 'application/json');
+                    }
+                }
                 $mozo = Utils::DameUnMozo();
                 $idEmpleado = $mozo->ID;
                 try
                 {
                     Mesa::AbrirMesa($idMesa, $idEmpleado, $idPedido);
-                    Empleado::SumarMesaMozo($idEmpleado);
+                    Empleado::SumarOperacion($idEmpleado);
                     $payload = json_encode("La mesa {$idMesa} esta siendo atendida por {$mozo->Nombre} {$mozo->Apellido}");
                     $response->getBody()->write($payload);
                     return $response->withHeader('Content-Type', 'application/json');

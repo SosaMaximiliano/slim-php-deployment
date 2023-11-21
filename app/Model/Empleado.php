@@ -3,16 +3,18 @@
 
 class Empleado
 {
-    public static function AltaEmpleado($nombre, $apellido)
+    public static function AltaEmpleado($nombre, $apellido, $clave)
     {
+        $fecha = date('Y-m-d');
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "INSERT INTO Empleado (Nombre,Apellido,Clave) 
-            VALUES (:nombre,:apellido,:clave)"
+            "INSERT INTO Empleado (Nombre,Apellido,Clave,FechaAlta) 
+            VALUES (:nombre,:apellido,:clave,:fecha)"
         );
         $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
         $consulta->bindValue(':apellido', $apellido, PDO::PARAM_STR);
-        $consulta->bindValue(':clave', $apellido, PDO::PARAM_STR);
+        $consulta->bindValue(':clave', $clave, PDO::PARAM_STR);
+        $consulta->bindValue(':fecha', $fecha, PDO::PARAM_STR);
         $consulta->execute();
     }
 
@@ -20,7 +22,7 @@ class Empleado
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "SELECT * FROM Empleado"
+            "SELECT * FROM Empleado WHERE Estado != 'Baja'"
         );
         $consulta->execute();
 
@@ -87,11 +89,21 @@ class Empleado
         return null;
     }
 
-    public static function SumarMesaMozo($idEmpleado)
+    // public static function SumarMesaMozo($idEmpleado)
+    // {
+    //     $objAccesoDatos = AccesoDatos::obtenerInstancia();
+    //     $consultaUpdate = $objAccesoDatos->prepararConsulta(
+    //         "UPDATE Empleado SET Operaciones = Operaciones + 1 WHERE ID = :idEmpleado"
+    //     );
+    //     $consultaUpdate->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
+    //     $consultaUpdate->execute();
+    // }
+
+    public static function SumarOperacion($idEmpleado)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consultaUpdate = $objAccesoDatos->prepararConsulta(
-            "UPDATE Empleado SET Mesas_A_Cargo = Mesas_A_Cargo + 1 WHERE ID = :idEmpleado"
+            "UPDATE Empleado SET Operaciones = Operaciones + 1 WHERE ID = :idEmpleado"
         );
         $consultaUpdate->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
         $consultaUpdate->execute();
@@ -99,11 +111,27 @@ class Empleado
 
     public static function BajaEmpleado($idEmpleado)
     {
-        $estado = "Inactivo";
+        $estado = "Baja";
+        $fecha = date('Y-m-d');
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
             "UPDATE Empleado 
-                    SET Estado = :estado 
+                    SET Estado = :estado, FechaBaja = :fecha 
+                    WHERE ID = :idEmpleado"
+        );
+        $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
+        $consulta->bindValue(':fecha', $fecha, PDO::PARAM_STR);
+        $consulta->bindValue(':idEmpleado', $idEmpleado, PDO::PARAM_INT);
+        $consulta->execute();
+    }
+
+    public static function SuspenderEmpleado($idEmpleado)
+    {
+        $estado = "Suspendido";
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta(
+            "UPDATE Empleado 
+                    SET Estado = :estado
                     WHERE ID = :idEmpleado"
         );
         $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
