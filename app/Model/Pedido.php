@@ -1,5 +1,7 @@
 <?php
 
+use function PHPSTORM_META\type;
+
 include_once 'Producto.php';
 include_once '../app/Utils/Utils.php';
 

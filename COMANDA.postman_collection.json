@@ -1,0 +1,1100 @@
+{
+	"info": {
+		"_postman_id": "b425a35c-e6a5-495c-80f9-bb3286b58e05",
+		"name": "COMANDA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29694268"
+	},
+	"item": [
+		{
+			"name": "SOCIOS",
+			"item": [
+				{
+					"name": "AltaEmpleado",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1ODg4MzEsImV4cCI6MTcwMDY0ODgzMSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.Lcj9hMf1028RGwAQdKiD72Cl6z_9_E1uOGv0vQ2em6M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Nombre",
+									"value": "Chuck",
+									"type": "text"
+								},
+								{
+									"key": "Apellido",
+									"value": "Norris",
+									"type": "text"
+								},
+								{
+									"key": "Clave",
+									"value": "515",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost/COMANDA/app/admin/empleado_alta",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"COMANDA",
+								"app",
+								"admin",
+								"empleado_alta"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AltaMesa",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1ODg4MzEsImV4cCI6MTcwMDY0ODgzMSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.Lcj9hMf1028RGwAQdKiD72Cl6z_9_E1uOGv0vQ2em6M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost/COMANDA/app/admin/mesa_alta",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"COMANDA",
+								"app",
+								"admin",
+								"mesa_alta"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AltaProducto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA0OTA3NzksImV4cCI6MTcwMDU1MDc3OSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.6mltzgfsRE2BfeKHUXks4SbMdaLQJSMsOKntU67Cn20",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Nombre",
+									"value": "Cerveza Corona",
+									"type": "text"
+								},
+								{
+									"key": "Cantidad",
+									"value": "1519",
+									"type": "text"
+								},
+								{
+									"key": "Precio",
+									"value": "700",
+									"type": "text"
+								},
+								{
+									"key": "Tiempo",
+									"value": "00:00",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost/COMANDA/app/admin/producto_alta",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"COMANDA",
+								"app",
+								"admin",
+								"producto_alta"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AsignarSector",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1ODg4MzEsImV4cCI6MTcwMDY0ODgzMSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.Lcj9hMf1028RGwAQdKiD72Cl6z_9_E1uOGv0vQ2em6M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"ID\": 14,\n\"Sector\": \"Cocinero\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/COMANDA/app/admin/empleado_asignarsector",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"COMANDA",
+								"app",
+								"admin",
+								"empleado_asignarsector"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarEmpleados",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1ODg4MzEsImV4cCI6MTcwMDY0ODgzMSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.Lcj9hMf1028RGwAQdKiD72Cl6z_9_E1uOGv0vQ2em6M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/COMANDA/app/admin/empleado_listar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"COMANDA",
+								"app",
+								"admin",
+								"empleado_listar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarPorSector",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA0OTA3NzksImV4cCI6MTcwMDU1MDc3OSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.6mltzgfsRE2BfeKHUXks4SbMdaLQJSMsOKntU67Cn20",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost/COMANDA/app/admin/empleado_listarporsector?Sector=Mozo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"COMANDA",
+								"app",
+								"admin",
+								"empleado_listarporsector"
+							],
+							"query": [
+								{
+									"key": "Sector",
+									"value": "Mozo"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarClientes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA0OTA3NzksImV4cCI6MTcwMDU1MDc3OSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.6mltzgfsRE2BfeKHUXks4SbMdaLQJSMsOKntU67Cn20",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/COMANDA/app/admin/cliente_listar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"COMANDA",
+								"app",
+								"admin",
+								"cliente_listar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BajaEmpleado",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1ODg4MzEsImV4cCI6MTcwMDY0ODgzMSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.Lcj9hMf1028RGwAQdKiD72Cl6z_9_E1uOGv0vQ2em6M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost/COMANDA/app/admin/empleado_baja?ID=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"COMANDA",
+								"app",
+								"admin",
+								"empleado_baja"
+							],
+							"query": [
+								{
+									"key": "ID",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EMPLEADOS",
+			"item": [
+				{
+					"name": "MOZOS",
+					"item": [
+						{
+							"name": "AltaPedido",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1OTA3NjgsImV4cCI6MTcwMDY1MDc2OCwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjksIk5vbWJyZSI6IkNsaW50IiwiQXBlbGxpZG8iOiJFYXN0d29vZCIsIkNsYXZlIjoiNTE1IiwiU2VjdG9yIjoiTW96byJ9LCJhcHAiOiJMYSBDb21hbmRhIn0.ferlTGFkmLScWRSYQJMB-vG74wyKVmL2P_FKqLS3BxQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"Productos\": \n[\n    {\"Producto\" : \"15\",\"Cantidad\" : \"3\"},\n    {\"Producto\" : \"22\",\"Cantidad\" : \"5\"},\n    {\"Producto\" : \"16\",\"Cantidad\" : \"3\"},\n    {\"Producto\" : \"19\",\"Cantidad\" : \"2\"},\n    {\"Producto\" : \"20\",\"Cantidad\" : \"3\"}\n],\n  \"ID_Mesa\": 12\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/COMANDA/app/empleado/pedido_alta",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"COMANDA",
+										"app",
+										"empleado",
+										"pedido_alta"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AbrirMesa",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1OTA3NjgsImV4cCI6MTcwMDY1MDc2OCwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjksIk5vbWJyZSI6IkNsaW50IiwiQXBlbGxpZG8iOiJFYXN0d29vZCIsIkNsYXZlIjoiNTE1IiwiU2VjdG9yIjoiTW96byJ9LCJhcHAiOiJMYSBDb21hbmRhIn0.ferlTGFkmLScWRSYQJMB-vG74wyKVmL2P_FKqLS3BxQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "ID_Mesa",
+											"value": "11",
+											"type": "text"
+										},
+										{
+											"key": "ID_Pedido",
+											"value": "36",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost/COMANDA/app/empleado/mesa_abrir",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"COMANDA",
+										"app",
+										"empleado",
+										"mesa_abrir"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AltaComanda",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1OTA3NjgsImV4cCI6MTcwMDY1MDc2OCwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjksIk5vbWJyZSI6IkNsaW50IiwiQXBlbGxpZG8iOiJFYXN0d29vZCIsIkNsYXZlIjoiNTE1IiwiU2VjdG9yIjoiTW96byJ9LCJhcHAiOiJMYSBDb21hbmRhIn0.ferlTGFkmLScWRSYQJMB-vG74wyKVmL2P_FKqLS3BxQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "ID_Mesa",
+											"value": "11",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost/COMANDA/app/empleado/comanda_alta",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"COMANDA",
+										"app",
+										"empleado",
+										"comanda_alta"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AltaCliente",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA0OTEzOTUsImV4cCI6MTcwMDU1MTM5NSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjEsIk5vbWJyZSI6IkJydWNlIiwiQXBlbGxpZG8iOiJXYXluZSIsIkNsYXZlIjoiNTE1IiwiU2VjdG9yIjoiTW96byJ9LCJhcHAiOiJMYSBDb21hbmRhIn0.W0Q0KYRSEGMHUxp83OFcu5kdSAqVy6vQZj-cycjQaDE",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "idProducto",
+											"value": "8",
+											"type": "text"
+										},
+										{
+											"key": "cantidad",
+											"value": "4",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost/COMANDA/app/empleado/cliente_alta",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"COMANDA",
+										"app",
+										"empleado",
+										"cliente_alta"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CambiarEstadoMesa",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1ODY0NjMsImV4cCI6MTcwMDY0NjQ2MywiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.83pSR6DUVSGIp7wiUgskHA6_6k2189djgrP8xvKvyiA",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"ID_Mesa\": 8,\n\"Estado\": \"Cerrada\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/COMANDA/app/empleado/mesa_cambiarestado",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"COMANDA",
+										"app",
+										"empleado",
+										"mesa_cambiarestado"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CambiarEstadoPedido",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1ODY0NjMsImV4cCI6MTcwMDY0NjQ2MywiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.83pSR6DUVSGIp7wiUgskHA6_6k2189djgrP8xvKvyiA",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"ID_Pedido\": 30,\n    \"Estado\": \"Listo para servir\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/COMANDA/app/empleado/pedido_cambiarestado",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"COMANDA",
+										"app",
+										"empleado",
+										"pedido_cambiarestado"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ListarPedidos",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1OTA3NjgsImV4cCI6MTcwMDY1MDc2OCwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjksIk5vbWJyZSI6IkNsaW50IiwiQXBlbGxpZG8iOiJFYXN0d29vZCIsIkNsYXZlIjoiNTE1IiwiU2VjdG9yIjoiTW96byJ9LCJhcHAiOiJMYSBDb21hbmRhIn0.ferlTGFkmLScWRSYQJMB-vG74wyKVmL2P_FKqLS3BxQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/COMANDA/app/empleado/pedido_listar",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"COMANDA",
+										"app",
+										"empleado",
+										"pedido_listar"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ListarProductos",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA0OTEzOTUsImV4cCI6MTcwMDU1MTM5NSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjEsIk5vbWJyZSI6IkJydWNlIiwiQXBlbGxpZG8iOiJXYXluZSIsIkNsYXZlIjoiNTE1IiwiU2VjdG9yIjoiTW96byJ9LCJhcHAiOiJMYSBDb21hbmRhIn0.W0Q0KYRSEGMHUxp83OFcu5kdSAqVy6vQZj-cycjQaDE",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/COMANDA/app/empleado/producto_listar",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"COMANDA",
+										"app",
+										"empleado",
+										"producto_listar"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ListarMesas",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1ODY0NjMsImV4cCI6MTcwMDY0NjQ2MywiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.83pSR6DUVSGIp7wiUgskHA6_6k2189djgrP8xvKvyiA",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/COMANDA/app/empleado/mesa_listar",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"COMANDA",
+										"app",
+										"empleado",
+										"mesa_listar"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BuscarProductoID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA0OTEzOTUsImV4cCI6MTcwMDU1MTM5NSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjEsIk5vbWJyZSI6IkJydWNlIiwiQXBlbGxpZG8iOiJXYXluZSIsIkNsYXZlIjoiNTE1IiwiU2VjdG9yIjoiTW96byJ9LCJhcHAiOiJMYSBDb21hbmRhIn0.W0Q0KYRSEGMHUxp83OFcu5kdSAqVy6vQZj-cycjQaDE",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/COMANDA/app/empleado/producto_buscarporid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"COMANDA",
+										"app",
+										"empleado",
+										"producto_buscarporid"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BuscarProductoNombre",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA0OTEzOTUsImV4cCI6MTcwMDU1MTM5NSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjEsIk5vbWJyZSI6IkJydWNlIiwiQXBlbGxpZG8iOiJXYXluZSIsIkNsYXZlIjoiNTE1IiwiU2VjdG9yIjoiTW96byJ9LCJhcHAiOiJMYSBDb21hbmRhIn0.W0Q0KYRSEGMHUxp83OFcu5kdSAqVy6vQZj-cycjQaDE",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/COMANDA/app/empleado/producto_buscarpornombre",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"COMANDA",
+										"app",
+										"empleado",
+										"producto_buscarpornombre"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BuscarPedidoPorID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1ODI4OTgsImV4cCI6MTcwMDY0Mjg5OCwiYXVkIjoiMWY3MzZhNDNiNDgzZjQ0ZDc5M2ZlNTAwMmNlYjFmYzVjZmU0MDc5NyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.yNRn1UpYyU2tv8LMSnu3E6j4aFS6D6CyyVpB-1BlGWc",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"name": "authorization",
+										"sortOrder": 0,
+										"infoTitle": "This header was automatically added",
+										"info": "This header is added because of the authorization method used for this request.\n\nThe value of this header is tentative. You can find the exact value in the console once the request is sent.\n\nUse the authorization tab to remove authorization or to change the value of this header.",
+										"allowedToToggle": false,
+										"disableEdit": true,
+										"previewSettingsLink": "Go to authorization",
+										"key": "Authorization",
+										"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1ODI4OTgsImV4cCI6MTcwMDY0Mjg5OCwiYXVkIjoiMWY3MzZhNDNiNDgzZjQ0ZDc5M2ZlNTAwMmNlYjFmYzVjZmU0MDc5NyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.yNRn1UpYyU2tv8LMSnu3E6j4aFS6D6CyyVpB-1BlGWc",
+										"system": true,
+										"auth": true,
+										"type": "text"
+									},
+									{
+										"name": "cache-control",
+										"sortOrder": 2,
+										"infoTitle": "We recommend using this header",
+										"info": "Postman added \"Cache-Control: no-cache\" as a precautionary measure to prevent the server from returning stale response when one makes repeated requests.\n\nYou can remove this header in the app settings or enter a new one with a different value.",
+										"allowedToToggle": false,
+										"disableEdit": true,
+										"previewSettingsLink": "Go to settings",
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"system": true,
+										"type": "text"
+									},
+									{
+										"name": "postman-token",
+										"sortOrder": 3,
+										"infoTitle": "We recommend using this header",
+										"info": "The Postman-Token header appends a random UUID to every outgoing request. Postman adds this header for API developers to better debug requests sent and to ensure separate requests appear distinct to the receiving server.\n\nYou can remove this header in the app settings.",
+										"allowedToToggle": false,
+										"disableEdit": true,
+										"previewSettingsLink": "Go to settings",
+										"key": "Postman-Token",
+										"value": "<calculated when request is sent>",
+										"system": true,
+										"type": "text"
+									},
+									{
+										"name": "host",
+										"sortOrder": 6,
+										"infoTitle": "We recommend using this header",
+										"info": "The Host header is added to identify the domain name for which a request is being sent to the server. This header is implicitly sent by every HTTP client.\n\nYou can remove the header or enter a new one with a different value. It is most likely that without this header, your request will return an HTTP 400 error.",
+										"allowedToToggle": true,
+										"disableEdit": true,
+										"key": "Host",
+										"value": "<calculated when request is sent>",
+										"system": true,
+										"type": "text"
+									},
+									{
+										"name": "user-agent",
+										"sortOrder": 7,
+										"infoTitle": "We recommend using this header",
+										"info": "The User-Agent header is added to help the server identify Postman as the HTTP requesting application or client.\n\nIt is recommended that this header be sent, but you can remove the header or enter a new one with a different value.",
+										"allowedToToggle": true,
+										"disableEdit": true,
+										"key": "User-Agent",
+										"value": "PostmanRuntime/7.32.1",
+										"system": true,
+										"type": "text"
+									},
+									{
+										"name": "accept",
+										"sortOrder": 8,
+										"infoTitle": "We recommend using this header",
+										"info": "The \"Accept: */*\" header is added to tell the server that Postman can understand and process all forms of response content types.\n\nIt is recommended that this header be sent, but you can remove the header or enter a new one with a different value.",
+										"allowedToToggle": true,
+										"disableEdit": true,
+										"key": "Accept",
+										"value": "*/*",
+										"system": true,
+										"type": "text"
+									},
+									{
+										"name": "accept-encoding",
+										"sortOrder": 9,
+										"infoTitle": "We recommend using this header",
+										"info": "The Accept-Encoding header is added to indicate to the server that Postman HTTP client supports a defined list of content-encoding or compression algorithms as response.\n\nYou can remove the header or enter a new one with a different value. Doing that may not accurately render the response within the app.",
+										"allowedToToggle": true,
+										"disableEdit": true,
+										"key": "Accept-Encoding",
+										"value": "gzip, deflate, br",
+										"system": true,
+										"type": "text"
+									},
+									{
+										"name": "connection",
+										"sortOrder": 10,
+										"infoTitle": "We recommend using this header",
+										"info": "Postman added the Connection header to indicate the server to keep the underlying network connection open once the current response is received. This allows Postman to reuse the same connection for faster response times in subsequent requests to the same server.\n\nYou can remove this header or enter a new one with a different value, such as `Connection: Close` to control this behaviour.",
+										"allowedToToggle": true,
+										"disableEdit": true,
+										"key": "Connection",
+										"value": "keep-alive",
+										"system": true,
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost/COMANDA/app/empleado/pedido_traerpedido?ID=30",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"COMANDA",
+										"app",
+										"empleado",
+										"pedido_traerpedido"
+									],
+									"query": [
+										{
+											"key": "ID",
+											"value": "30"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "ListarPedidosPorSector",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA0OTEzOTUsImV4cCI6MTcwMDU1MTM5NSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjEsIk5vbWJyZSI6IkJydWNlIiwiQXBlbGxpZG8iOiJXYXluZSIsIkNsYXZlIjoiNTE1IiwiU2VjdG9yIjoiTW96byJ9LCJhcHAiOiJMYSBDb21hbmRhIn0.W0Q0KYRSEGMHUxp83OFcu5kdSAqVy6vQZj-cycjQaDE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/COMANDA/app/empleado/pedido_listarporsector?Sector=Cervecero",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"COMANDA",
+								"app",
+								"empleado",
+								"pedido_listarporsector"
+							],
+							"query": [
+								{
+									"key": "Sector",
+									"value": "Cervecero"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CambiarEstadoPorSector",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDA1ODg4MzEsImV4cCI6MTcwMDY0ODgzMSwiYXVkIjoiZjg3MjI2NmJhOTRjYmY0MTI4MmQxYTMzNjA2Nzg3YWUzZjNkNzFhMyIsImRhdGEiOnsiSUQiOjQsIk5vbWJyZSI6Ik1vZSIsIkFwZWxsaWRvIjoiSG93YXJkIiwiQ2xhdmUiOiJwYXNzMTIzNCIsIlNlY3RvciI6IlNvY2lvIn0sImFwcCI6IkxhIENvbWFuZGEifQ.Lcj9hMf1028RGwAQdKiD72Cl6z_9_E1uOGv0vQ2em6M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ID_Pedido\":\"36\",\n    \"Sector\":\"Cocinero\",\n    \"Estado\":\"Listo para servir\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/COMANDA/app/empleado/pedido_cambiarestadoporsector",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"COMANDA",
+								"app",
+								"empleado",
+								"pedido_cambiarestadoporsector"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CLIENTES",
+			"item": [
+				{
+					"name": "Encuesta",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "ID_Comanda",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "Puntuacion Mesa",
+									"value": "7",
+									"type": "text"
+								},
+								{
+									"key": "Puntuacion Mozo",
+									"value": "9",
+									"type": "text"
+								},
+								{
+									"key": "Puntuacion Cocinero",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "Puntuacion Restaurant",
+									"value": "8",
+									"type": "text"
+								},
+								{
+									"key": "Comentarios",
+									"value": "Re caro",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost/COMANDA/app/usuario/cliente_encuesta",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"COMANDA",
+								"app",
+								"usuario",
+								"cliente_encuesta"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MostrarPedido",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/COMANDA/app/usuario/cliente_pedido?Clave Unica=8NW1K",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"COMANDA",
+								"app",
+								"usuario",
+								"cliente_pedido"
+							],
+							"query": [
+								{
+									"key": "Clave Unica",
+									"value": "8NW1K"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "ID",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "Clave",
+							"value": "pass1234",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/COMANDA/app/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"COMANDA",
+						"app",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
