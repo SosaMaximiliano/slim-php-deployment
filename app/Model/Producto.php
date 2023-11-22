@@ -1,19 +1,21 @@
 <?php
 
+include_once 'CSV.php';
 
 class Producto
 {
-    public static function AltaProducto($nombre, $cantidad, $precio, $tiempo)
+    public static function AltaProducto($nombre, $cantidad, $precio, $tiempo, $sector)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
-            "INSERT INTO Producto (Nombre,Cantidad,Precio,Tiempo) 
-            VALUES (:nombre,:cantidad,:precio,:tiempo)"
+            "INSERT INTO Producto (Nombre,Cantidad,Precio,Tiempo,Sector) 
+            VALUES (:nombre,:cantidad,:precio,:tiempo,:sector)"
         );
         $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
         $consulta->bindValue(':cantidad', $cantidad, PDO::PARAM_INT);
         $consulta->bindValue(':precio', $precio, PDO::PARAM_INT);
         $consulta->bindValue(':tiempo', $tiempo, PDO::PARAM_STR);
+        $consulta->bindValue(':sector', $sector, PDO::PARAM_STR);
         $consulta->execute();
     }
 
@@ -84,5 +86,21 @@ class Producto
         $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
         $consulta->bindValue(':cantidad', $cantidad, PDO::PARAM_STR);
         $consulta->execute();
+    }
+
+    public static function CargarCSV($archivo)
+    {
+        $array = CSV::LeerCsv($archivo);
+        for ($i = 0; $i < sizeof($array); $i++)
+        {
+            $campos = explode(",", $array[$i]);
+            $nombre = $campos[0];
+            $cantidad = $campos[1];
+            $precio = $campos[2];
+            $tiempo = $campos[3];
+            $sector = $campos[4];
+
+            self::AltaProducto($nombre, $cantidad, $precio, $tiempo, $sector);
+        }
     }
 }

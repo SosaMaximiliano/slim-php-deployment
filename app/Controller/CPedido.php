@@ -152,4 +152,21 @@ class CPedido
         else
             throw new Exception("Pedido inexistente", 200);
     }
+
+    public static function CargarImagen(Request $request, Response $response, $args)
+    {
+        $filename = $request->getParsedBody()['ID_Pedido'];
+        $uploadedFile = $request->getUploadedFiles()['Imagen'];
+        $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+        if ($uploadedFile->getError() === UPLOAD_ERR_OK)
+        {
+            $uploadedFile->moveTo("./ImagenesDePedidos/ID_Pedido-$filename.$extension");
+            $response->getBody()->write('Archivo cargado correctamente.');
+        }
+        else
+        {
+            $response->getBody()->write('Error al cargar el archivo.');
+        }
+        return $response;
+    }
 }

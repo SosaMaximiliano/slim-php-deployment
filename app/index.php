@@ -47,6 +47,7 @@ $app->group('/empleado', function (RouteCollectorProxy $group)
 {
     #PRODUCTOS
     $group->post('/producto_alta', \CProducto::class . ':AgregarProducto');
+    $group->post('/producto_cargarcsv', \CProducto::class . ':CargarProductosCSV');
     $group->get('/producto_listar', \CProducto::class . ':ListarProductos');
     $group->get('/producto_buscarporid', \CProducto::class . ':BuscarProductoID');
     $group->get('/producto_buscarpornombre', \CProducto::class . ':BuscarProductoNombre');
@@ -59,6 +60,7 @@ $app->group('/empleado', function (RouteCollectorProxy $group)
     $group->get('/pedido_listarporcliente', \CPedido::class . ':ListarPedidosPorCliente')->add(new CheckMozoMiddleware());
     $group->put('/pedido_cambiarestado', \CPedido::class . ':CambiarEstadoPedido')->add(new CheckMozoMiddleware());
     $group->put('/pedido_cambiarestadoporsector', \CPedido::class . ':CambiarEstadoPedidoPorSector');
+    $group->post('/pedido_cargarimagen', \CPedido::class . ':CargarImagen')->add(new CheckMozoMiddleware());
 
     #MESAS
     $group->post('/mesa_abrir', \CMesa::class . ':AbrirMesa')->add(new CheckMozoMiddleware());

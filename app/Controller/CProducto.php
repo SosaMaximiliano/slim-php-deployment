@@ -15,13 +15,14 @@ class CProducto
         $cantidad = $parametros['Cantidad'];
         $precio = $parametros['Precio'];
         $tiempo = $parametros['Tiempo'];
+        $sector = $parametros['Sector'];
 
         $p = Producto::BuscarProductoNombre($nombre);
         if ($p === NULL)
         {
             try
             {
-                Producto::AltaProducto($nombre, $cantidad, $precio, $tiempo);
+                Producto::AltaProducto($nombre, $cantidad, $precio, $tiempo, $sector);
                 $payload = json_encode("{$nombre} agregado al stock.");
                 $response->getBody()->write($payload);
                 return $response->withHeader('Content-Type', 'application/json');
@@ -41,6 +42,23 @@ class CProducto
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json');
         }
+    }
+
+    public static function CargarProductosCSV(Request $request, Response $response, $args)
+    {
+        $uploadedFile = $request->getUploadedFiles()['Archivo'];
+        if ($uploadedFile->getError() === UPLOAD_ERR_OK)
+        {
+            $filename = $uploadedFile->getClientFilename();
+            $uploadedFile->moveTo("$filename");
+            Producto::CargarCSV($filename);
+            $response->getBody()->write('Archivo cargado correctamente.');
+        }
+        else
+        {
+            $response->getBody()->write('Error al cargar el archivo.');
+        }
+        return $response;
     }
 
     public static function ListarProductos(Request $request, Response $response, $args)
