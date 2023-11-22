@@ -50,7 +50,7 @@ class CProducto
         if ($uploadedFile->getError() === UPLOAD_ERR_OK)
         {
             $filename = $uploadedFile->getClientFilename();
-            //$uploadedFile->moveTo("$filename");
+            $uploadedFile->moveTo("$filename");
             Producto::CargarCSV($filename);
             $response->getBody()->write('Archivo cargado correctamente.');
         }
@@ -84,5 +84,52 @@ class CProducto
         $payload = json_encode(Producto::BuscarProductoNombre($nombre));
         $response->getBody()->write($payload);
         return $response->withHeader('Content-Type', 'application/json');
+    }
+
+    public function ExportarTabla(Request $request, Response $response, $args)
+    {
+        try
+        {
+            $archivo = CSV::ExportarTabla("Productos.csv");
+            if (file_exists($archivo) && filesize($archivo) > 0)
+            {
+                $payload = json_encode(array("mensaje" => "http://localhost/COMANDA/app/" . $archivo));
+            }
+            else
+            {
+                $payload = json_encode(array("mensaje" => "Error, verifique la informacion ingresada"));
+            }
+
+            $response->getBody()->write($payload);
+
+            return $response->withHeader('Content-Type', 'application/json');
+        }
+        catch (Throwable $mensaje)
+        {
+            printf("Error al listar: <br> $mensaje .<br>");
+        }
+        finally
+        {
+            return $response->withHeader('Content-Type', 'text/csv');
+        }
+    }
+
+    public function ImportarTabla(Request $request, Response $response, $args)
+    {
+        try
+        {
+            $archivo = ($_FILES["archivoCSV"]);
+            Producto::CargarCSV($archivo["tmp_name"]);
+            $payload = json_encode(array("mensaje" => "La base de datos fue actualizada correctamente"));
+        }
+        catch (Throwable $mensaje)
+        {
+            $payload = json_encode(array("mensaje" => $mensaje->getMessage()));
+        }
+        finally
+        {
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'text/csv');
+        }
     }
 }

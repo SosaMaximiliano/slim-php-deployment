@@ -47,7 +47,6 @@ $app->group('/empleado', function (RouteCollectorProxy $group)
 {
     #PRODUCTOS
     $group->post('/producto_alta', \CProducto::class . ':AgregarProducto');
-    $group->post('/producto_cargarcsv', \CProducto::class . ':CargarProductosCSV');
     $group->get('/producto_listar', \CProducto::class . ':ListarProductos');
     $group->get('/producto_buscarporid', \CProducto::class . ':BuscarProductoID');
     $group->get('/producto_buscarpornombre', \CProducto::class . ':BuscarProductoNombre');
@@ -85,6 +84,8 @@ $app->group('/admin', function (RouteCollectorProxy $group)
     $group->get('/empleado_listarporsector', \CEmpleado::class . ':ListarEmpleadosPorSector');
     $group->put('/empleado_asignarsector', \CEmpleado::class . ':AsignarSector');
     $group->post('/mesa_alta', \CMesa::class . ':AltaMesa');
+    $group->post('/producto_cargarcsv', \CProducto::class . ':CargarProductosCSV');
+    $group->get('/producto_exportartabla', \CProducto::class . ':ExportarTabla');
 })
     ->add(new CheckSocioMiddleware())
     ->add(new CheckTokenMiddleware());
@@ -93,6 +94,12 @@ $app->group('/usuario', function (RouteCollectorProxy $group)
 {
     $group->get('/cliente_pedido', \CPedido::class . ':TraerPedidoPorClave');
     $group->post('/cliente_encuesta', \CEncuesta::class . ':RealizarEncuesta');
+});
+
+$app->get('[/]', function (Request $request, Response $response)
+{
+    $response->getBody()->write("La Comanda - TP Programacion III ");
+    return $response;
 });
 
 $app->run();
