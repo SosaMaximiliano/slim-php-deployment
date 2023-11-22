@@ -50,7 +50,7 @@ class CProducto
         if ($uploadedFile->getError() === UPLOAD_ERR_OK)
         {
             $filename = $uploadedFile->getClientFilename();
-            $uploadedFile->moveTo("$filename");
+            //$uploadedFile->moveTo("$filename");
             Producto::CargarCSV($filename);
             $response->getBody()->write('Archivo cargado correctamente.');
         }

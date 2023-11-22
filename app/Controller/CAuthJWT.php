@@ -9,7 +9,7 @@ class CAuthJWT
         $usuario = Empleado::BuscarEmpleadoPorID($parametros['ID']);
         if ($usuario != null)
         {
-            if ($parametros['Clave'] == $usuario->Clave)
+            if (password_verify($parametros["Clave"], $usuario->Clave))
             {
                 $datos = array(
                     'ID' => $usuario->ID,

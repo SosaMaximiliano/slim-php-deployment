@@ -6,6 +6,7 @@ class Empleado
     public static function AltaEmpleado($nombre, $apellido, $clave)
     {
         $fecha = date('Y-m-d');
+        $pass = password_hash($clave, PASSWORD_DEFAULT);
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta(
             "INSERT INTO Empleado (Nombre,Apellido,Clave,FechaAlta) 
@@ -13,7 +14,7 @@ class Empleado
         );
         $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
         $consulta->bindValue(':apellido', $apellido, PDO::PARAM_STR);
-        $consulta->bindValue(':clave', $clave, PDO::PARAM_STR);
+        $consulta->bindValue(':clave', $pass, PDO::PARAM_STR);
         $consulta->bindValue(':fecha', $fecha, PDO::PARAM_STR);
         $consulta->execute();
     }
