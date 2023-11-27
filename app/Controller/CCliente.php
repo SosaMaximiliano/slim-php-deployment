@@ -12,7 +12,7 @@ class CCliente
         #HACER VALIDACIONES
         $parametros = $request->getParsedBody();
         $nombre = $parametros['nombre'];
-        $idProducto = $parametros['id$idProducto'];
+        $idProducto = $parametros['idProducto'];
         $cantidad = $parametros['cantidad'];
         try
         {
